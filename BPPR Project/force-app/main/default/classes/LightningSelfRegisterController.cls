@@ -4,6 +4,7 @@ global class LightningSelfRegisterController {
 
     }
 
+    // Check is password is the same
     @TestVisible 
     private static boolean isValidPassword(String password, String confirmPassword) {
         return password == confirmPassword;
@@ -15,6 +16,7 @@ global class LightningSelfRegisterController {
         return authConfig.isCommunityUsingSiteAsContainer();
     }
     
+    // Validate password
     @TestVisible 
     private static void validatePassword(User u, String password, String confirmPassword) {
         if(!Test.isRunningTest()) {
@@ -23,6 +25,7 @@ global class LightningSelfRegisterController {
         return;
     }
     
+    // Register function
     @AuraEnabled
     public static String selfRegister(String firstname ,String lastname, String email, String password, String confirmPassword, String accountId, String regConfirmUrl, String extraFields, String startUrl, Boolean includePassword) {
         Savepoint sp = null;
