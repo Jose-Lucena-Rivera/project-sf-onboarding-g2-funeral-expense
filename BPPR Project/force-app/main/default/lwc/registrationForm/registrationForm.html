@@ -1,0 +1,75 @@
+<template>
+    <lightning-card>
+        <template if:true={showError}>
+            <div class="slds-text-color_error">{errorMessage}</div>
+        </template>
+
+        <lightning-input
+            label="First Name"
+            value={firstName}
+            onchange={handleInputChange}
+            data-id="firstName">
+        </lightning-input>
+
+        <lightning-input
+            label="Last Name"
+            value={lastName}
+            onchange={handleInputChange}
+            data-id="lastName">
+        </lightning-input>
+
+        <lightning-input
+            label="Email"
+            value={email}
+            type="email"
+            onchange={handleInputChange}
+            data-id="email">
+        </lightning-input>
+
+        <lightning-input
+            label="Phone"
+            value={phone}
+            type="tel"
+            onchange={handleInputChange}
+            data-id="phone">
+        </lightning-input>
+
+        <lightning-input
+            label="Date of Birth"
+            value={dateOfBirth}
+            type="date"
+            onchange={handleInputChange}
+            data-id="dateOfBirth">
+        </lightning-input>
+        
+        <lightning-input
+            label="Last 4 Digits of SSN"
+            value={ssn}
+            type="password"
+            onchange={handleInputChange}
+            data-id="ssn">
+        </lightning-input>
+
+        <lightning-input
+            label="Password"
+            type="password"
+            value={password}
+            onchange={handleInputChange}
+            data-id="password">
+        </lightning-input>
+
+        <lightning-input
+            label="Confirm Password"
+            type="password"
+            value={confirmPassword}
+            onchange={handleInputChange}
+            data-id="confirmPassword">
+        </lightning-input>
+
+        <lightning-button
+            label="Submit"
+            onclick={handleSubmit}
+            variant="brand">
+        </lightning-button>
+    </lightning-card>
+</template>

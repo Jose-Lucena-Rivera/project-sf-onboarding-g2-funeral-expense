@@ -16,7 +16,7 @@
     <aura:attribute name="extraFields" type="list" required="false" description="A field set name whose fields are desired for user registration"/>
     <aura:handler name="init" value="{!this}" action="{!c.initialize}"/>
     <aura:attribute name="expid" type="String" required="false" description="The branding experience ID" />    
-    
+
     <aura:registerevent name="sitePropagatedStartUrl" type="c:setStartUrl"/>
     <aura:handler name="init" value="{!this}" action="{!c.initialize}"/>
     <aura:dependency resource="c:setStartUrl" type="EVENT"/>
