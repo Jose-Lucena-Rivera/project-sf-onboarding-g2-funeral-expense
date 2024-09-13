@@ -1,3 +1,155 @@
 <template>
-    
+    <!-- Screen 2 -->
+    <template lwc:if={isScreen2}>
+        <p>You can request an advance from the Bank to cover funeral expenses.</p>
+
+        <p>Requirements to request processing:</p>
+        <ul>
+            <li>Death Certificate (original or copy)</li>
+            <li>Funeral home bill</li>
+        </ul>
+        
+        <p>
+            The Bank will issue an official check payable to the funeral home for the amount bill up to the maximum permitted by law 
+            ($15,000) of the funds deposited with Popular.
+        </p>
+        
+        <p>Is the funeral home invoice paid?</p>
+        <lightning-combobox 
+            name="secondDropdown" 
+            label="Select Answer"
+            value={selectedSecondOption} 
+            placeholder="Select Yes/No"
+            options={secondDropdownOptions} 
+            onchange={handleSecondDropdownChange}>
+        </lightning-combobox>
+        <template lwc:if={isOptionYes}>
+            <p>
+                To request an advance for funeral expenses the invoice must be unpaid. You can request a general advance,
+                for more information on how to request this visit <lightning-formatted-url value="https://popular.com/processing-estate"></lightning-formatted-url>
+            </p>
+        </template>
+        <lightning-button label="Previous" onclick={handlePrevious} class="slds-m-top_medium"></lightning-button>
+        <template lwc:if={showNextButton}>
+            <lightning-button label="Next" onclick={handleNext} class="slds-m-top_medium"></lightning-button>
+        </template>
+    </template>
+
+    <!-- Screen 3 -->
+    <template lwc:elseif={isScreen3}>
+        <!-- Deceased customer information -->
+        <h6>Deceased customer information:</h6>
+        <lightning-input label="First Name"></lightning-input>
+        <lightning-input label="Las Name"></lightning-input>
+        <lightning-input label="Social Security Number" type="password"></lightning-input>
+        <lightning-input label="Date of Death" type="date"></lightning-input>
+        <lightning-file-upload 
+            label="Upload Death Certificate (PDF)"
+            name="deathCertificate"
+            multiple="false"
+            accept="[.pdf]"
+            onuploadfinished={handleUploadFinished}
+            >
+        </lightning-file-upload>
+
+        <!-- Requestor information -->
+         <h6>Requestor information:</h6>
+        <lightning-input label="First Name" read-only></lightning-input>
+        <lightning-input label="Last Name" read-only></lightning-input>
+        <lightning-input label="Relationship"></lightning-input>
+        <lightning-input label="Email" read-only type="email"></lightning-input>
+        <lightning-input label="Preferred Phone Number" read-only type="tel"></lightning-input>
+        <lightning-input label="Other Phone Number" type="tel"></lightning-input>
+        <lightning-file-upload 
+            label="Upload copy of requestor ID"
+            name="requestorID"
+            multiple="false"
+            accept={acceptedFormats}
+            onuploadfinished={handleUploadFinished}
+            >
+        </lightning-file-upload>
+
+        <!-- Disbursement Information -->
+        <h6>Disbursement Information:</h6>
+        <lightning-input label="Funeral Home Name"></lightning-input>
+        <lightning-input label="Claimed Amount" type="number"></lightning-input>
+        <lightning-combobox
+            name="thirdDropdown" 
+            label="Disbursement Preference"
+            value={selectedThirdOption}
+            placeholder="Select Disbursement preference"
+            options={thirdDropdownOptions} 
+            onchange={handleThirdDropdownChange}>
+        </lightning-combobox>
+        <template lwc:if={isOptionDeposit}>
+            <lightning-input label="Funeral Home Account Number" type="number"></lightning-input>
+        </template>
+        <template lwc:elseif={isOptionBranch}>
+            <lightning-combobox
+                name="fourthDropdown" 
+                label="Pick the branch town you wish to pick-up the check:"
+                value={selectedFourthOption} 
+                placeholder="Select Branch Town"
+                options={fourthDropdownOptions} 
+                onchange={handleFourthDropdownChange}>
+            </lightning-combobox>
+            <lightning-combobox
+                name="fifthDropdown" 
+                label="Pick the branch you wish to pick-up check:"
+                value={selectedFifthOption} 
+                placeholder="Select Branch Name"
+                options={fifthDropdownOptions} 
+                onchange={handleFifthDropdownChange}>
+            </lightning-combobox>
+        </template>
+        <lightning-file-upload 
+            label="Funeral Home Invoice"
+            name="funeralHomeInvoice"
+            multiple="false"
+            accept={acceptedFormats}
+            onuploadfinished={handleUploadFinished}
+            >
+        </lightning-file-upload>
+
+        <!-- reCAPTCHA -->
+        <c-re-c-a-p-t-c-h-a></c-re-c-a-p-t-c-h-a>
+        
+        <!-- LEGAL STUFF -->
+        <p>[insert legal stuff in this paragraph]</p>
+        <lightning-input label="I have read and accepted the legal notification above" type="checkbox" required></lightning-input>
+
+        <lightning-button label="Previous" onclick={handlePrevious} class="slds-m-top_medium"></lightning-button>
+        <lightning-button label="Submit" onclick={handleSubmit} class="slds-m-top_medium"></lightning-button>
+    </template>
+
+    <!-- Screen 4 -->
+    <template lwc:elseif={isScreen4}>
+        <!-- You can add any elements for screen 4 here -->
+        <p>Screen 4: Final step or confirmation</p>
+    </template>
+
+    <!-- Screen 1 (default screen) -->
+    <template lwc:else>
+        <!-- Dropdown -->
+         <p>We are here to support you during this difficult time</p>
+
+            
+           <p> What is your request?</p>
+         
+        <lightning-combobox 
+            name="initialDropdown" 
+            label="What is your request?"
+            value={selectedFirstOption} 
+            placeholder="Select request type"
+            options={firstDropdownOptions} 
+            onchange={handleFirstDropdownChange}>
+        </lightning-combobox>
+        <!-- If Option 2 or 3, then show the link to Popular processing estate website. -->
+        <template lwc:if={isOption2or3}>
+            <p>Please visit <lightning-formatted-url value="https://popular.com/processing-estate"></lightning-formatted-url> for more information.</p>
+        </template>
+        <template lwc:if={showNextButton}>
+            <lightning-button label="Next" onclick={handleNext} class="slds-m-top_medium"></lightning-button>
+        </template>
+    </template>
 </template>
