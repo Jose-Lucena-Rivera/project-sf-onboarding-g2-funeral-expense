@@ -19,10 +19,10 @@
         </script>
     </body>
 </html> -->
-<html>
+<!-- <html>
     <head>
         <script src="https://www.google.com/recaptcha/enterprise.js?render=6Le2jEIqAAAAANBR_7SyGcY6nkBneNqNua8uCtE0"></script>
-        <!-- Your site code -->
+        Your site code
       </head>
     <body>
         <input type="hidden" name="recaptcha_response" id="recaptchaResponse"/>
@@ -33,4 +33,31 @@
               });
           </script>
     </body>
+</html> -->
+
+<html></html>
+  <head>
+    <title>reCAPTCHA demo: Simple page</title>
+     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+  </head>
+  <body>
+    <form action="?" onsubmit="return validateForm()" method="POST">
+      <div class="g-recaptcha" data-sitekey="6Le2jEIqAAAAANBR_7SyGcY6nkBneNqNua8uCtE0"></div>
+      <br/>
+      <input type="submit" value="Submit">
+    </form>
+ 
+    <script type="text/javascript">
+        function validateForm(){
+ 
+            if(grecaptcha.getResponse().length == 0){
+                alert('Please click the reCAPTCHA checkbox');
+                parent.postMessage("captcha failed", location.origin);
+                return false;
+            }
+            parent.postMessage("captcha success", location.origin);
+            return true;
+        }
+    </script>
+  </body>
 </html>

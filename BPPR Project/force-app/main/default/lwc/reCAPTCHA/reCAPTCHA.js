@@ -92,42 +92,65 @@
     //             console.error('Error verifying reCAPTCHA:', error);
     //         });
     // }
-    import { LightningElement, track, api } from 'lwc';
+// import { LightningElement, track, api } from 'lwc';
+// import pageUrl from '@salesforce/resourceUrl/reCaptcha';
+// import isReCaptchaValid from '@salesforce/apex/reCAPTCHAController.isReCaptchaValid';
+
+// export default class reCaptcha extends LightningElement {
+//     @api formToken;
+//     @api validReCAPTCHA = false;
+
+//     @track navigateTo;
+//     captchaWindow = null;
+
+//     constructor(){
+//         super();
+//         this.navigateTo = pageUrl;
+//         window.addEventListener("message", this.listenForMessage);
+//     }
+//     listenForMessage(e){
+//         console.log(e);
+//         console.log('e-'+ JSON.stringify(e.data));
+//         if(e.data)
+//         {
+//             if (e.data.action == "getCAPCAH" && e.data.callCAPTCHAResponse == ""){
+//                 console.log("Token not obtained!")
+//             } else if (e.data.action == "getCAPCAH" ) {
+//                 this.formToken = e.data.callCAPTCHAResponse;
+//                 isReCaptchaValid({token: formToken}).then(data => {
+//                     this.validReCAPTCHA = data;
+//                 });
+//             };
+//         }
+//     }
+//     onCaptchaLoaded(evt){
+//         var e = evt;
+//         console.log(e.target.getAttribute('src') + ' loaded-'+ pageUrl);
+//         if(e.target.getAttribute('src') == pageUrl){
+//             this.listenForMessage(evt);
+//         } 
+//
+import { LightningElement, track, api } from 'lwc';
 import pageUrl from '@salesforce/resourceUrl/reCaptcha';
 import isReCaptchaValid from '@salesforce/apex/reCAPTCHAController.isReCaptchaValid';
 
-export default class reCaptcha extends LightningElement {
-    @api formToken;
-    @api validReCAPTCHA = false;
-
+export default class reCAPTCHA extends LightningElement {
     @track navigateTo;
-    captchaWindow = null;
-
+ 
     constructor(){
         super();
         this.navigateTo = pageUrl;
-        window.addEventListener("message", this.listenForMessage);
+        window.addEventListener("message", this.listenForMessage);//add event listener for message that we post in our recaptchaV2 static resource html file.
     }
-    listenForMessage(e){
-        console.log(e);
-        console.log('e-'+ JSON.stringify(e.data));
-        if(e.data)
-        {
-            if (e.data.action == "getCAPCAH" && e.data.callCAPTCHAResponse == ""){
-                console.log("Token not obtained!")
-            } else if (e.data.action == "getCAPCAH" ) {
-                this.formToken = e.data.callCAPTCHAResponse;
-                isReCaptchaValid({token: formToken}).then(data => {
-                    this.validReCAPTCHA = data;
-                });
-            };
-        }
-    }
-    onCaptchaLoaded(evt){
-        var e = evt;
-        console.log(e.target.getAttribute('src') + ' loaded-'+ pageUrl);
-        if(e.target.getAttribute('src') == pageUrl){
-            this.listenForMessage(evt);
+ 
+    captchaLoaded(event){
+        if(event.target.getAttribute('src') == pageUrl){
+            console.log('Google reCAPTCHA is loaded.');
         } 
+    }
+ 
+    listenForMessage(message){
+        console.log('message data : ' + message.data);//message.data - The object passed from the other window.
+        console.log('message origin : ' + message.origin);//message.origin - The origin of the window that sent the message at the time postMessage was called.
     }
 }
