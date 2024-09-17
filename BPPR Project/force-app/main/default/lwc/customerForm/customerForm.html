@@ -39,10 +39,32 @@
     <template lwc:elseif={isScreen3}>
         <!-- Deceased customer information -->
         <h6>Deceased customer information:</h6>
-        <lightning-input label="First Name"></lightning-input>
-        <lightning-input label="Las Name"></lightning-input>
-        <lightning-input label="Social Security Number" type="password"></lightning-input>
-        <lightning-input label="Date of Death" type="date"></lightning-input>
+        <lightning-input 
+            label="First Name" 
+            value={formData.firstNameDeceased}
+            onchange={handleInputChange}
+            data-id="firstNameDeceased">
+        </lightning-input>
+        <lightning-input 
+            label="Last Name" 
+            value={formData.lastNameDeceased}
+            onchange={handleInputChange}
+            data-id="lastNameDeceased">
+        </lightning-input>
+        <lightning-input 
+            label="Social Security Number" 
+            type="password" 
+            value={formData.ssn}
+            onchange={handleInputChange}
+            data-id="ssn">
+        </lightning-input>
+        <lightning-input 
+            label="Date of Death" 
+            type="date" 
+            value={formData.dateOfDeath}
+            onchange={handleInputChange}
+            data-id="dateOfDeath">
+        </lightning-input>
         <lightning-file-upload 
             label="Upload Death Certificate (PDF)"
             name="deathCertificate"
@@ -53,13 +75,49 @@
         </lightning-file-upload>
 
         <!-- Requestor information -->
-         <h6>Requestor information:</h6>
-        <lightning-input label="First Name" read-only></lightning-input>
-        <lightning-input label="Last Name" read-only></lightning-input>
-        <lightning-input label="Relationship"></lightning-input>
-        <lightning-input label="Email" read-only type="email"></lightning-input>
-        <lightning-input label="Preferred Phone Number" read-only type="tel"></lightning-input>
-        <lightning-input label="Other Phone Number" type="tel"></lightning-input>
+        <h6>Requestor information:</h6>
+        <lightning-input 
+            label="First Name" 
+            read-only 
+            value={formData.firstname}
+            onchange={handleInputChange}
+            data-id="firstname">
+        </lightning-input>
+        <lightning-input 
+            label="Last Name" 
+            read-only 
+            value={formData.lastname}
+            onchange={handleInputChange}
+            data-id="lastname">
+        </lightning-input>
+        <lightning-input 
+            label="Relationship" 
+            value={formData.relationship}
+            onchange={handleInputChange}
+            data-id="relationship">
+        </lightning-input>
+        <lightning-input 
+            label="Email" 
+            read-only type="email" 
+            value={formData.email}
+            onchange={handleInputChange}
+            data-id="email">
+        </lightning-input>
+        <lightning-input 
+            label="Preferred Phone Number" 
+            read-only 
+            type="tel" 
+            value={formData.preferredPhone}
+            onchange={handleInputChange}
+            data-id="preferredPhone">
+        </lightning-input>
+        <lightning-input 
+            label="Other Phone Number" 
+            type="tel" 
+            value={formData.otherPhone}
+            onchange={handleInputChange}
+            data-id="otherPhone">
+        </lightning-input>
         <lightning-file-upload 
             label="Upload copy of requestor ID"
             name="requestorID"
@@ -71,21 +129,55 @@
 
         <!-- Disbursement Information -->
         <h6>Disbursement Information:</h6>
-        <lightning-input label="Funeral Home Name"></lightning-input>
-        <lightning-input label="Claimed Amount" type="number"></lightning-input>
+        <lightning-input 
+            label="Funeral Home Name"
+            value={formData.funeralHomeName}
+            onchange={handleInputChange}
+            data-id="funeralHomeName">
+        </lightning-input>
+        <lightning-input 
+            label="Claimed Amount" 
+            value={formData.claimedAmount}
+            type="number"
+            onchange={handleInputChange}
+            data-id="claimedAmount">
+        </lightning-input>
         <lightning-combobox
             name="thirdDropdown" 
             label="Disbursement Preference"
-            value={selectedThirdOption}
+            value={formData.disbursementPreference}
             placeholder="Select Disbursement preference"
             options={thirdDropdownOptions} 
             onchange={handleThirdDropdownChange}>
         </lightning-combobox>
         <template lwc:if={isOptionDeposit}>
-            <lightning-input label="Funeral Home Account Number" type="number"></lightning-input>
+            <lightning-input 
+                label="Funeral Home Account Number"
+                value={formData.funeralHomeNumber}
+                onchange={handleInputChange}
+                data-id="funeralHomeNumber">
+            </lightning-input>
         </template>
         <template lwc:elseif={isOptionBranch}>
             <lightning-combobox
+                name="parentPicklist"
+                label="Choose a Branch Town"
+                value={selectedParentValue}
+                placeholder="Select Branch Town"
+                options={parentPicklistValues}
+                onchange={handleParentChange}>
+            </lightning-combobox>
+        
+            <lightning-combobox
+                name="childPicklist"
+                label="Choose a Branch"
+                value={selectedChildValue}
+                placeholder="Select Branch"
+                options={childPicklistValues}
+                onchange={handleChildChange}>
+            </lightning-combobox>
+
+            <!-- <lightning-combobox
                 name="fourthDropdown" 
                 label="Pick the branch town you wish to pick-up the check:"
                 value={selectedFourthOption} 
@@ -100,7 +192,8 @@
                 placeholder="Select Branch Name"
                 options={fifthDropdownOptions} 
                 onchange={handleFifthDropdownChange}>
-            </lightning-combobox>
+            </lightning-combobox> -->
+            
         </template>
         <lightning-file-upload 
             label="Funeral Home Invoice"
@@ -108,6 +201,7 @@
             multiple="false"
             accept={acceptedFormats}
             onuploadfinished={handleUploadFinished}
+            
             >
         </lightning-file-upload>
 
@@ -119,7 +213,7 @@
         <lightning-input label="I have read and accepted the legal notification above" type="checkbox" required></lightning-input>
 
         <lightning-button label="Previous" onclick={handlePrevious} class="slds-m-top_medium"></lightning-button>
-        <lightning-button label="Submit" onclick={handleSubmit} class="slds-m-top_medium"></lightning-button>
+        <lightning-button label="Submit" onclick={handleCaseSubmit} class="slds-m-top_medium"></lightning-button>
     </template>
 
     <!-- Screen 4 -->
