@@ -4,6 +4,7 @@ import createAdvanceFundCase from '@salesforce/apex/CaseController.createAdvance
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import getCurrentUserAndAccount from '@salesforce/apex/CaseController.getCurrentUserAndAccount';
 import getBranchTowns from '@salesforce/apex/CaseController.getBranchTowns';
+import linkContentDocumentToCase from '@salesforce/apex/CaseController.linkContentDocumentToCase';
 
 
 
@@ -63,6 +64,7 @@ export default class CustomerForm extends LightningElement {
     @track selectedParentValue = '';
     @track selectedChildValue = '';
     dependentValuesMap = {}; // To store the map returned from Apex
+    uploadedFiles = [];
 
 
     // Handle dropdown selections for Dropdown #1
@@ -91,6 +93,13 @@ export default class CustomerForm extends LightningElement {
         // Set the selected child value
         this.selectedChildValue = event.detail.value;
         console.log(`Selected Child Value: ${this.selectedChildValue}`);
+    }
+
+    handleUploadFinished(event) {
+        // Get the list of uploaded files and store their ContentDocumentId
+        const uploadedFiles = event.detail.files;
+        this.uploadedFiles = uploadedFiles.map(file => file.documentId);
+        console.log('Uploaded Files:', this.uploadedFiles);
     }
 
     connectedCallback() {
@@ -161,12 +170,6 @@ export default class CustomerForm extends LightningElement {
     get acceptedFormats() {
         return ['.pdf', '.png', '.jpeg'];
     }
-
-    handleUploadFinished(event) {
-        // Get the list of uploaded files
-        const uploadedFiles = event.detail.files;
-        alert('No. of files uploaded : ' + uploadedFiles.length);
-    }
    
 
     handleCaseSubmit() {
@@ -189,12 +192,12 @@ export default class CustomerForm extends LightningElement {
             branchTown: this.formData.branchTown,
             branch: this.formData.branch
         }).then(result => {
-            console.log(result);
             // If true, create a Success Toast Notification,
             // Else create an Error Toast Notification.
             if (result != 'error') {
                 this.handleSuccessToast(result);
-                
+                this.linkFilesToCase(result.Id);
+                window.location.href = "/s/my-cases";
             } else {
                 this.handleErrorToast();
             }
@@ -290,6 +293,19 @@ export default class CustomerForm extends LightningElement {
             .catch(error => {
                 console.error('Error fetching user and account information:', error);
             });
+    }
+
+    linkFilesToCase(caseId) {
+        // Call Apex to link each uploaded file to the newly created case
+        if (this.uploadedFiles.length > 0) {
+            linkContentDocumentToCase({ caseId, contentDocumentIds: this.uploadedFiles })
+                .then(() => {
+                    console.log('Files successfully linked to case:', caseId);
+                })
+                .catch(error => {
+                    console.error('Error linking files to case:', error);
+                });
+        }
     }
 
     handleInputChange(event) {

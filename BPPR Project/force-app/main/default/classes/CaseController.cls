@@ -220,4 +220,14 @@ public with sharing class CaseController {
             throw new AuraHandledException(e.getMessage());
         }
     }
+
+    @AuraEnabled
+    public static void linkContentDocumentToCase(Id contentDocumentId, Id caseId) {
+            ContentDocumentLink link = new ContentDocumentLink();
+            link.ContentDocumentId = contentDocumentId;
+            link.LinkedEntityId = caseId;
+            link.ShareType = 'V'; // View access
+            insert link;
+     }
+    
 }
