@@ -1,8 +1,9 @@
 import { LightningElement, track } from 'lwc';
-import getDependentPicklistValues from '@salesforce/apex/CaseController.getDependentPicklistValues';
+import getDependentBranchNames from '@salesforce/apex/CaseController.getDependentBranchNames';
 import createAdvanceFundCase from '@salesforce/apex/CaseController.createAdvanceFundCase';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import getCurrentUserAndAccount from '@salesforce/apex/CaseController.getCurrentUserAndAccount';
+import getBranchTowns from '@salesforce/apex/CaseController.getBranchTowns';
 
 
 
@@ -56,6 +57,13 @@ export default class CustomerForm extends LightningElement {
     // Contains selected values for each of the Dropdowns
     @track selectedFirstOption;
     @track selectedSecondOption;
+    ///Picklist logic
+    @track parentPicklistValues = [];
+    @track childPicklistValues = [];
+    @track selectedParentValue = '';
+    @track selectedChildValue = '';
+    dependentValuesMap = {}; // To store the map returned from Apex
+
 
     // Handle dropdown selections for Dropdown #1
     handleFirstDropdownChange(event) {
@@ -71,14 +79,25 @@ export default class CustomerForm extends LightningElement {
     }
     
     handleParentChange(event) {
-        // Handle parent picklist change and update child values accordingly
+        // Set the selected parent value
         this.selectedParentValue = event.detail.value;
-        this.fetchPicklistValues(); // Re-fetch child options based on new parent selection
+        console.log(`Selected Parent Value: ${this.selectedParentValue}`);
+
+        // Fetch branches based on the selected parent value
+        this.fetchChildPicklistValues(this.selectedParentValue);
     }
 
     handleChildChange(event) {
-        // Handle child picklist change
+        // Set the selected child value
         this.selectedChildValue = event.detail.value;
+        console.log(`Selected Child Value: ${this.selectedChildValue}`);
+    }
+
+    connectedCallback() {
+        // Fetch initial picklist values on load
+        this.fetchParentPicklistValues();
+        // Fetch current user information
+        this.fetchCurrentUserInfo();
     }
 
     get showNextButton() {
@@ -151,13 +170,6 @@ export default class CustomerForm extends LightningElement {
    
 
     handleCaseSubmit() {
-        // Iterate over formData using a for...in loop
-        for (let key in this.formData) {
-            if (this.formData.hasOwnProperty(key)) {
-                console.log(`Field: ${key}, Value: ${this.formData[key]}`);
-            }
-        }
-
         createAdvanceFundCase({
             firstNameDeceased: this.formData.firstNameDeceased,
             lastNameDeceased: this.formData.lastNameDeceased,
@@ -227,40 +239,36 @@ export default class CustomerForm extends LightningElement {
     }
         
 
-    ///Picklist logic
-    @track parentPicklistValues = [];
-    @track childPicklistValues = [];
-    @track selectedParentValue = '';
-    @track selectedChildValue = '';
 
-    connectedCallback() {
-        // Fetch initial picklist values on load
-        this.fetchPicklistValues();
-
-        // Fetch current user information
-        this.fetchCurrentUserInfo();
-    }
-
-    fetchPicklistValues() {
-        // Fetch picklist values using Apex method
-        getDependentPicklistValues({ controllingFieldValue: this.selectedParentValue })
-            .then(result => {
-                // Map picklist values to options format for combobox
-                this.parentPicklistValues = Object.keys(result).map(key => ({
-                    label: key,
-                    value: key
+    fetchParentPicklistValues() {
+        getBranchTowns()
+            .then((result) => {
+                // Populate parent picklist values with the result
+                this.parentPicklistValues = result.map((town) => ({
+                    label: town,
+                    value: town
                 }));
-                // Set child values initially empty or based on selected parent value
-                this.childPicklistValues = result[this.selectedParentValue] ? result[this.selectedParentValue].map(value => ({
-                    label: value,
-                    value: value
-                })) : [];
+                console.log('Parent Picklist Values:', this.parentPicklistValues);
             })
-            .catch(error => {
-                console.error('Error fetching picklist values:', error);
+            .catch((error) => {
+                console.error('Error fetching parent picklist values:', error);
             });
     }
 
+    fetchChildPicklistValues(controllingFieldValue) {
+        getDependentBranchNames({ controllingFieldValue })
+            .then((result) => {
+                // Populate child picklist values with the result
+                this.childPicklistValues = result.map((branch) => ({
+                    label: branch,
+                    value: branch
+                }));
+                console.log('Child Picklist Values:', this.childPicklistValues);
+            })
+            .catch((error) => {
+                console.error('Error fetching child picklist values:', error);
+            });
+    }
     fetchCurrentUserInfo() {
         getCurrentUserAndAccount()
             .then(result => {

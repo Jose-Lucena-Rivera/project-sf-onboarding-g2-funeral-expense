@@ -1,0 +1,25 @@
+<template>
+    <!-- If user has cases, print them all -->
+    <template lwc:if={thereAreCases}>
+        <table>
+            <thead>
+                <tr>
+                    <th>Case Number</th>
+                    <th>Case Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <template iterator:it={userCases}>
+                    <tr key={it.value.Id}>
+                        <td>{it.value.CaseNumber}</td>
+                        <td>{it.value.Status}</td>
+                    </tr>
+                </template>
+            </tbody>
+        </table>
+    </template>
+    <!-- Else show a message -->
+    <template lwc:else>
+        <p>There are no cases.</p>
+    </template>
+</template>
