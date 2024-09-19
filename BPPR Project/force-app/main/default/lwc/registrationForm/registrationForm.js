@@ -9,8 +9,16 @@ export default class RegistrationForm extends LightningElement {
     @track phone = '';
     @track dateOfBirth = '';
     @track ssn = '';
+    
+    @track street = '';
+    @track city = '';
+    @track state = '';
+    @track country = '';
+    @track postalCode = '';
+    
     @track password = '';
     @track confirmPassword = '';
+
     @track errorMessage = '';
     @track showError = false;
 
@@ -44,6 +52,11 @@ export default class RegistrationForm extends LightningElement {
             phone: this.phone,
             dateOfBirth: this.dateOfBirth,
             ssn: this.ssn,
+            street: this.street,
+            city: this.city,
+            state: this.state,
+            country: this.country,
+            postalCode: this.postalCode,
             password: this.password,
             confirmPassword: this.confirmPassword,
             accountId: "", 
@@ -57,6 +70,7 @@ export default class RegistrationForm extends LightningElement {
             } else {
                 this.handleRegisterSuccess();
             }
+
         })
         .catch(error => {
             this.showError = true;

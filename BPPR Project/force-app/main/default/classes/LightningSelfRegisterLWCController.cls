@@ -19,7 +19,9 @@ global with sharing class LightningSelfRegisterLWCController {
     
     // Register function
     @AuraEnabled
-    public static String selfRegister(String firstname, String lastname, String email, String phone, Date dateOfBirth, String ssn, String password, String confirmPassword, String accountId, String regConfirmUrl, String startUrl) {
+    public static String selfRegister(String firstname, String lastname, String email, String phone, Date dateOfBirth, String ssn, 
+    String street, String city, String state, String country, String postalCode,
+    String password, String confirmPassword, String accountId, String regConfirmUrl, String startUrl) {
         Savepoint sp = null;
         try {
             sp = Database.setSavepoint();
@@ -42,6 +44,13 @@ global with sharing class LightningSelfRegisterLWCController {
             u.put('Phone', phone);
             u.put('Date_of_Birth__c', dateOfBirth);
             u.put('SSN__c', ssn);
+
+            // Address
+            u.put('Street', street);
+            u.put('City', city);
+            u.put('State', state);
+            u.put('Country', country);
+            u.put('PostalCode', postalCode);
 
             String networkId = Network.getNetworkId();
 

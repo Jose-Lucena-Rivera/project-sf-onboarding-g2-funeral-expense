@@ -17,8 +17,8 @@ public with sharing class CaseController {
     public static String createAdvanceFundCase(String firstNameDeceased, String lastNameDeceased, String funeralHomeName, String disbursementPreference, 
     Date dateOfDeath, String claimedAmount, String preferredPhone, String otherPhone, String relationship, String ssn, String funeralHomeNumber, String firstname, 
     String lastname, String email, String accountId, String branchTown, String branch) {
-        
-      
+    
+
         // Create new Case
         Case c = new Case(
             First_Name_Deceased__c=firstNameDeceased,
@@ -41,21 +41,20 @@ public with sharing class CaseController {
         Database.SaveResult sr;
         // Insert new Case. If it succeeds, send a true value; else send a false value.
         try {
-            sr = Database.insert(c, true);
-
-            if (sr.isSuccess()) {
-                List<Case> cases = [SELECT id, caseNumber FROM Case WHERE id = :sr.getId() LIMIT 1];
-            } else {
+           sr = Database.insert(c, true);
+           if (sr.isSuccess()) {
+              List<Case> cases = [SELECT id, caseNumber FROM Case WHERE id = :sr.getId() LIMIT 1];
+           } else {
                 // Handle the error case
-                String errorMessage = 'The following errors have occurred:\n';
-                for (Database.Error err : sr.getErrors()) {                   
-                    errorMessage += err.getStatusCode() + ': ' + err.getMessage() + '\n';
-                    errorMessage += 'Case fields that affected this error: ' + err.getFields() + '\n';
+               String errorMessage = 'The following errors have occurred:\n';
+               for (Database.Error err : sr.getErrors()) {                   
+                   errorMessage += err.getStatusCode() + ': ' + err.getMessage() + '\n';
+                  errorMessage += 'Case fields that affected this error: ' + err.getFields() + '\n';
                 }
                 throw new AuraHandledException(errorMessage);
             }
-        } catch (Exception e) {
-            throw new AuraHandledException('Case was not inserted: ' + e.getMessage());
+       } catch (Exception e) {
+           throw new AuraHandledException('Case was not inserted: ' + e.getMessage());
         }
 
         Case caseCreated;
@@ -64,8 +63,16 @@ public with sharing class CaseController {
         } catch (Exception e) {
             throw new AuraHandledException('Case was not found: ' + e.getMessage());
         }
+        
+        try {
+            // Run flow to send emails
+            invokeFlow(caseCreated.id);
+        } catch (Exception e) {
+            throw new AuraHandledException('Email was not sent: ' + e.getMessage());
+        }
 
         return caseCreated.caseNumber;
+
     }
 
     
@@ -221,13 +228,19 @@ public with sharing class CaseController {
         }
     }
 
-    @AuraEnabled
-    public static void linkContentDocumentToCase(Id contentDocumentId, Id caseId) {
-            ContentDocumentLink link = new ContentDocumentLink();
-            link.ContentDocumentId = contentDocumentId;
-            link.LinkedEntityId = caseId;
-            link.ShareType = 'V'; // View access
-            insert link;
-     }
-    
+    private static void invokeFlow(String caseId) {
+        // Prepare the flow input variables
+        Map<String, Object> flowInputs = new Map<String, Object>();
+        flowInputs.put('caseId', caseId);  // Assuming 'caseId' is the Flow input variable name
+        
+        // Instantiate the Flow
+        Flow.Interview.request_confirmation_alert flow = new Flow.Interview.request_confirmation_alert(flowInputs);
+        // Start the Flow
+        flow.start();
+        
+        // // Optionally, retrieve output variables if your flow has any
+        // Map<String, Object> flowOutputs = flow.getVariables();
+        // System.debug('Flow Outputs: ' + flowOutputs);
+    }
+
 }
