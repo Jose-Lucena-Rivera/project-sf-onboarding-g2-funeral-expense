@@ -1,105 +1,157 @@
 <template>
     <lightning-card>
-        <template if:true={showError}>
+        <template lwc:if={showError}>
             <div class="slds-text-color_error">{errorMessage}</div>
         </template>
 
         <lightning-input
             label="First Name"
-            value={firstName}
+            value={formFields.firstName}
             onchange={handleInputChange}
-            data-id="firstName">
+            data-id="firstName"
+            required>
         </lightning-input>
+        <!-- <template lwc:if={fieldErrors.firstName}>
+            <div class="slds-text-color_error">{fieldErrors.firstName}</div>
+        </template> -->
 
         <lightning-input
             label="Last Name"
-            value={lastName}
+            value={formFields.lastName}
             onchange={handleInputChange}
-            data-id="lastName">
+            data-id="lastName"
+            required>
         </lightning-input>
+        <!-- <template lwc:if={fieldErrors.lastName}>
+            <div class="slds-text-color_error">{fieldErrors.lastName}</div>
+        </template> -->
 
         <lightning-input
             label="Email"
-            value={email}
+            value={formFields.email}
             type="email"
             onchange={handleInputChange}
-            data-id="email">
+            data-id="email"
+            required>
         </lightning-input>
+        <!-- <template lwc:if={fieldErrors.email}>
+            <div class="slds-text-color_error">{fieldErrors.email}</div>
+        </template> -->
 
         <lightning-input
             label="Phone"
-            value={phone}
+            value={formFields.phone}
             type="tel"
             onchange={handleInputChange}
-            data-id="phone">
+            data-id="phone"
+            required>
         </lightning-input>
+        <!-- <template lwc:if={fieldErrors.phone}>
+            <div class="slds-text-color_error">{fieldErrors.phone}</div>
+        </template> -->
 
         <lightning-input
             label="Date of Birth"
-            value={dateOfBirth}
+            value={formFields.dateOfBirth}
             type="date"
             onchange={handleInputChange}
-            data-id="dateOfBirth">
+            data-id="dateOfBirth"
+            required>
         </lightning-input>
+        <!-- <template lwc:if={fieldErrors.dateOfBirth}>
+            <div class="slds-text-color_error">{fieldErrors.dateOfBirth}</div>
+        </template> -->
         
         <lightning-input
             label="Last 4 Digits of SSN"
-            value={ssn}
+            value={formFields.ssn}
             type="password"
             onchange={handleInputChange}
-            data-id="ssn">
+            data-id="ssn"
+            required>
         </lightning-input>
+        <!-- <template lwc:if={fieldErrors.ssn}>
+            <div class="slds-text-color_error">{fieldErrors.ssn}</div>
+        </template> -->
 
         <lightning-textarea
             label="Street Address"
-            value={street}
+            value={formFields.street}
             onchange={handleInputChange}
-            data-id="street">
+            data-id="street"
+            required>
         </lightning-textarea>
+        <!-- <template lwc:if={fieldErrors.street}>
+            <div class="slds-text-color_error">{fieldErrors.street}</div>
+        </template> -->
 
         <lightning-input
-            label="City Address"
-            value={city}
+            label="City"
+            value={formFields.city}
             onchange={handleInputChange}
-            data-id="city">
+            data-id="city"
+            required>
         </lightning-input>
+        <!-- <template lwc:if={fieldErrors.city}>
+            <div class="slds-text-color_error">{fieldErrors.city}</div>
+        </template> -->
 
         <lightning-input
             label="State Address"
-            value={state}
+            value={formFields.state}
             onchange={handleInputChange}
-            data-id="state">
+            data-id="state"
+            required>
         </lightning-input>
+        <!-- <template lwc:if={fieldErrors.state}>
+            <div class="slds-text-color_error">{fieldErrors.state}</div>
+        </template> -->
 
         <lightning-input
             label="Country Address"
-            value={country}
+            value={formFields.country}
             onchange={handleInputChange}
-            data-id="country">
+            data-id="country"
+            required>
         </lightning-input>
+        <!-- <template lwc:if={fieldErrors.country}>
+            <div class="slds-text-color_error">{fieldErrors.country}</div>
+        </template> -->
 
         <lightning-input
-            label="Postal Code "
-            value={postalCode}
+            label="Postal Code"
+            value={formFields.postalCode}
             onchange={handleInputChange}
-            data-id="postalCode">
+            data-id="postalCode"
+            required>
         </lightning-input>
+        <!-- <template lwc:if={fieldErrors.postalCode}>
+            <div class="slds-text-color_error">{fieldErrors.postalCode}</div>
+        </template> -->
 
         <lightning-input
             label="Password"
             type="password"
-            value={password}
+            value={formFields.password}
             onchange={handleInputChange}
-            data-id="password">
+            data-id="password"
+            required>
         </lightning-input>
+        <!-- <template lwc:if={fieldErrors.password}>
+            <div class="slds-text-color_error">{fieldErrors.password}</div>
+        </template> -->
 
         <lightning-input
             label="Confirm Password"
             type="password"
-            value={confirmPassword}
+            value={formFields.confirmPassword}
             onchange={handleInputChange}
-            data-id="confirmPassword">
+            data-id="confirmPassword"
+            required>
         </lightning-input>
+        <!-- <template lwc:if={fieldErrors.confirmPassword}>
+            <div class="slds-text-color_error">{fieldErrors.confirmPassword}</div>
+        </template> -->
 
         <lightning-button
             label="Submit"

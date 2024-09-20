@@ -14,7 +14,7 @@ public with sharing class CaseController {
         Funeral_Home_Account_Number__c
      */
     @AuraEnabled
-    public static String createAdvanceFundCase(String firstNameDeceased, String lastNameDeceased, String funeralHomeName, String disbursementPreference, 
+    public static Case createAdvanceFundCase(String firstNameDeceased, String lastNameDeceased, String funeralHomeName, String disbursementPreference, 
     Date dateOfDeath, String claimedAmount, String preferredPhone, String otherPhone, String relationship, String ssn, String funeralHomeNumber, String firstname, 
     String lastname, String email, String accountId, String branchTown, String branch) {
     
@@ -39,39 +39,34 @@ public with sharing class CaseController {
         );
         
         Database.SaveResult sr;
-        // Insert new Case. If it succeeds, send a true value; else send a false value.
+        // Insert new Case. If it succeeds.
         try {
            sr = Database.insert(c, true);
-           if (sr.isSuccess()) {
-              List<Case> cases = [SELECT id, caseNumber FROM Case WHERE id = :sr.getId() LIMIT 1];
-           } else {
+
+           // If insert NOT succeded, then print SaveResult error details.
+           if (!sr.isSuccess()) {
                 // Handle the error case
-               String errorMessage = 'The following errors have occurred:\n';
-               for (Database.Error err : sr.getErrors()) {                   
-                   errorMessage += err.getStatusCode() + ': ' + err.getMessage() + '\n';
-                  errorMessage += 'Case fields that affected this error: ' + err.getFields() + '\n';
+                String errorMessage = 'The following errors have occurred:\n';
+                for (Database.Error err : sr.getErrors()) {                   
+                    errorMessage += err.getStatusCode() + ': ' + err.getMessage() + '\n';
+                    errorMessage += 'Case fields that affected this error: ' + err.getFields() + '\n';
                 }
                 throw new AuraHandledException(errorMessage);
             }
-       } catch (Exception e) {
-           throw new AuraHandledException('Case was not inserted: ' + e.getMessage());
+        } catch (Exception e) {
+            throw new AuraHandledException('Case was not inserted: ' + e.getMessage());
         }
 
         Case caseCreated;
+        // Try and get the created case.
         try {
             caseCreated = [SELECT id, caseNumber FROM Case WHERE id=:sr.getId() LIMIT 1];
         } catch (Exception e) {
             throw new AuraHandledException('Case was not found: ' + e.getMessage());
         }
-        
-        try {
-            // Run flow to send emails
-            invokeFlow(caseCreated.id);
-        } catch (Exception e) {
-            throw new AuraHandledException('Email was not sent: ' + e.getMessage());
-        }
 
-        return caseCreated.caseNumber;
+        //return caseCreated.caseNumber;
+        return caseCreated;
 
     }
 
@@ -228,19 +223,48 @@ public with sharing class CaseController {
         }
     }
 
-    private static void invokeFlow(String caseId) {
-        // Prepare the flow input variables
-        Map<String, Object> flowInputs = new Map<String, Object>();
-        flowInputs.put('caseId', caseId);  // Assuming 'caseId' is the Flow input variable name
-        
-        // Instantiate the Flow
-        Flow.Interview.request_confirmation_alert flow = new Flow.Interview.request_confirmation_alert(flowInputs);
-        // Start the Flow
-        flow.start();
-        
-        // // Optionally, retrieve output variables if your flow has any
-        // Map<String, Object> flowOutputs = flow.getVariables();
-        // System.debug('Flow Outputs: ' + flowOutputs);
-    }
 
+
+
+
+
+    @AuraEnabled
+    public static void linkFilesToCaseApex(Id caseId, List<Id> fileIds) {
+        // Check if the caseId is valid
+        if (String.isBlank(caseId)) {
+            throw new AuraHandledException('Case ID cannot be blank');
+        }
+
+        // Ensure there are file IDs to link
+        if (fileIds == null || fileIds.isEmpty()) {
+            throw new AuraHandledException('No files provided to link');
+        }
+
+        List<Attachment> attachmentsToInsert = new List<Attachment>();
+
+        try {
+            // Iterate through the file IDs and create Attachments for each
+            for (Id fileId : fileIds) {
+                // Fetch the ContentDocument for each uploaded file
+                ContentDocument document = [SELECT Id, Title, FileExtension FROM ContentDocument WHERE Id = :fileId LIMIT 1];
+
+                // Create an Attachment record for each file
+                Attachment attachment = new Attachment();
+                attachment.ParentId = caseId; // Link the attachment to the case
+                attachment.Name = document.Title + '.' + document.FileExtension;
+                attachment.Body = [SELECT VersionData FROM ContentVersion WHERE ContentDocumentId = :fileId LIMIT 1].VersionData;
+                attachment.ContentType = 'application/octet-stream';
+
+                // Add the new Attachment to the list for batch insertion
+                attachmentsToInsert.add(attachment);
+            }
+
+            // Insert all attachments in one DML operation
+            if (!attachmentsToInsert.isEmpty()) {
+                insert attachmentsToInsert;
+            }
+        } catch (Exception e) {
+            throw new AuraHandledException('Error linking files to case: ' + e.getMessage());
+        }
+    }
 }

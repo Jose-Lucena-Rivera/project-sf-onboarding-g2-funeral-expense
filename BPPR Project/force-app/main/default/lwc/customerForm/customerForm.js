@@ -4,6 +4,7 @@ import createAdvanceFundCase from '@salesforce/apex/CaseController.createAdvance
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import getCurrentUserAndAccount from '@salesforce/apex/CaseController.getCurrentUserAndAccount';
 import getBranchTowns from '@salesforce/apex/CaseController.getBranchTowns';
+import linkFilesToCaseApex from '@salesforce/apex/CaseController.linkFilesToCaseApex';
 
 
 
@@ -14,7 +15,7 @@ export default class CustomerForm extends LightningElement {
     isScreen3 = false;
     isScreen4 = false;
 
-    //Track inputs form Data
+    //Track inputs of form Data
     @track formData = {
         firstNameDeceased: '',
         lastNameDeceased: '',
@@ -62,6 +63,7 @@ export default class CustomerForm extends LightningElement {
     @track childPicklistValues = [];
     @track selectedParentValue = '';
     @track selectedChildValue = '';
+    @track uploadedFileIds = [];
     dependentValuesMap = {}; // To store the map returned from Apex
 
 
@@ -85,12 +87,15 @@ export default class CustomerForm extends LightningElement {
 
         // Fetch branches based on the selected parent value
         this.fetchChildPicklistValues(this.selectedParentValue);
+        this.formData.branchTown = event.detail.value;  
     }
 
     handleChildChange(event) {
         // Set the selected child value
         this.selectedChildValue = event.detail.value;
         console.log(`Selected Child Value: ${this.selectedChildValue}`);
+
+        this.formData.branch = event.detail.value;
     }
 
     connectedCallback() {
@@ -162,20 +167,42 @@ export default class CustomerForm extends LightningElement {
         return ['.pdf', '.png', '.jpeg'];
     }
 
-    handleUploadFinished(event) {
-        // Get the list of uploaded files
-        const uploadedFiles = event.detail.files;
-        alert('No. of files uploaded : ' + uploadedFiles.length);
-    }
+    // handleUploadFinished(event) {
+    //     const uploadedFiles = event.detail.files;
+    //     if (uploadedFiles.length > 0) {
+    //         // Store the document IDs of the uploaded files for later use
+    //         this.uploadedFileIds = uploadedFiles.map(file => file.documentId);
+            
+    //         console.log('Stored File IDs:', this.uploadedFileIds);  // Logging the file IDs for debugging purposes
+    //         alert('No. of files uploaded: ' + uploadedFiles.length);
+    //     } else {
+    //         console.log('No files were uploaded');
+    //     }
+    // }
    
+    handleUploadFinished(event) {
+        const uploadedFiles = event.detail.files;
+    
+        // Append the new uploaded files to the existing list of file IDs
+        if (uploadedFiles.length > 0) {
+            uploadedFiles.forEach(file => {
+                this.uploadedFileIds.push(file.documentId);  // Add each new file ID to the array
+            });
+            
+            console.log('All stored file IDs:', this.uploadedFileIds);  // Logging for debugging purposes
+            alert('No. of files uploaded: ' + uploadedFiles.length);
+        } else {
+            console.log('No files were uploaded');
+        }
+    }
 
     handleCaseSubmit() {
         // Iterate over formData using a for...in loop
-        for (let key in this.formData) {
-            if (this.formData.hasOwnProperty(key)) {
-                console.log(`Field: ${key}, Value: ${this.formData[key]}`);
-            }
-        }
+        // for (let key in this.formData) {
+        //     if (this.formData.hasOwnProperty(key)) {
+        //         console.log(`Field: ${key}, Value: ${this.formData[key]}`);
+        //     }
+        // }
 
         createAdvanceFundCase({
             firstNameDeceased: this.formData.firstNameDeceased,
@@ -200,15 +227,21 @@ export default class CustomerForm extends LightningElement {
         
         .then(result => {
             console.log(result);
+            result = JSON.parse(JSON.stringify(result));
+            console.log(result);
+
+            // Now link the uploaded files to the newly created case
+            if (this.uploadedFileIds.length > 0) {
+                this.linkFilesToCase(result.Id);
+            }
             // If true, create a Success Toast Notification,
             // Else create an Error Toast Notification.
-            if (result != 'error') {
-                this.handleSuccessToast(result);
-                
+            if (result.CaseNumber != undefined) {
+                this.handleSuccessToast(result.CaseNumber);
             } else {
                 this.handleErrorToast();
             }
-        window.location.href = "/s/my-cases";
+           // window.location.href = "/s/my-cases";
 
 
         })
@@ -304,6 +337,61 @@ export default class CustomerForm extends LightningElement {
                 console.error('Error fetching user and account information:', error);
             });
     }
+
+    // linkFilesToCase(caseId) {
+    //     // Call Apex method to link the files to the case
+    //     linkFilesToCaseApex({ caseId: caseId, fileIds: this.uploadedFileIds })
+    //         .then(() => {
+    //             console.log('Files successfully linked to the case');
+    //             // Optionally show a toast or handle successful linking
+    //             const evt = new ShowToastEvent({
+    //                 title: 'Success',
+    //                 message: 'Files were successfully attached to the case',
+    //                 variant: 'success',
+    //             });
+    //             this.dispatchEvent(evt);
+    //         })
+    //         .catch(error => {
+    //             console.error('Error linking files to case:', error);
+    //             // Optionally show a toast or handle error
+    //             const evt = new ShowToastEvent({
+    //                 title: 'Error',
+    //                 message: 'Failed to attach files to the case. Please try again.',
+    //                 variant: 'error',
+    //             });
+    //             this.dispatchEvent(evt);
+    //         });
+    // }
+    linkFilesToCase(caseId) {
+        if (this.uploadedFileIds.length > 0) {
+            // Call Apex method to link the files to the case
+            linkFilesToCaseApex({ caseId: caseId, fileIds: this.uploadedFileIds })
+                .then(() => {
+                    console.log('Files successfully linked to the case');
+                    // Optionally show a toast or handle successful linking
+                    // const evt = new ShowToastEvent({
+                    //     title: 'Success',
+                    //     message: 'Files were successfully attached to the case',
+                    //     variant: 'success',
+                    // });
+                    // this.dispatchEvent(evt);
+                })
+                .catch(error => {
+                    console.error('Error linking files to case:', error);
+                    // Optionally show a toast or handle error
+                    // const evt = new ShowToastEvent({
+                    //     title: 'Error',
+                    //     message: 'Failed to attach files to the case. Please try again.',
+                    //     variant: 'error',
+                    // });
+                    // this.dispatchEvent(evt);
+                });
+        } else {
+            console.log('No files to link to the case');
+        }
+    }
+    
+    
 
     handleInputChange(event) {
         const field = event.target.dataset.id;

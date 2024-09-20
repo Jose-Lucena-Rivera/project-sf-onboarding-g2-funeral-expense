@@ -1,0 +1,24 @@
+.language-selector {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end; /* Aligns the selector to the right */
+    margin: 1rem;
+}
+
+.language-selector select {
+    appearance: none; /* Removes default styling of the dropdown */
+    /*background-color: #073579; Background color */
+    color: #073579; /* Text color */
+    border: none; /* Removes border */
+    padding: 0.5rem 1rem; /* Padding for the dropdown */
+    font-size: 0.875rem; /* Font size */
+    border-radius: 4px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    outline: none; /* Removes outline on focus */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+.language-selector select option {
+    background-color: #ffffff; /* Dropdown option background color */
+    color: #000000; /* Dropdown option text color */
+}
