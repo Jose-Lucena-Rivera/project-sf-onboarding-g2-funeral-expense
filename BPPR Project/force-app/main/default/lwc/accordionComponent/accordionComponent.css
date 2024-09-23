@@ -58,6 +58,7 @@
 .icon {
     margin-left: auto;
     color: #073579;
+    pointer-events: none;
 }
 
 .button-container {

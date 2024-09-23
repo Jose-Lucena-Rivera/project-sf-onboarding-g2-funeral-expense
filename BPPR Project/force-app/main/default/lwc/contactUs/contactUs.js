@@ -1,8 +1,10 @@
 import { LightningElement, track } from 'lwc';
+import PHONE from '@salesforce/resourceUrl/phone';
 
 export default class ContactUs extends LightningElement {
     @track isEnglish = false;
     @track isSpanish = false;
+    PhoneUrl = PHONE;
 
     connectedCallback() {
         this.checkLanguage();

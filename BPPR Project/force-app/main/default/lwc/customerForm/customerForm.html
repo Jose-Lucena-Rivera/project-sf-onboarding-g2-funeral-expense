@@ -21,7 +21,7 @@
             onchange={handleSecondDropdownChange}>
         </lightning-combobox>
         <template lwc:if={isOptionYes}>
-            <p>{formLabels.unpaidInvoiceInfo}</p>
+            <p>{formLabels.unpaidInvoiceInfo} <lightning-formatted-url value="https://popular.com/processing-estate"></lightning-formatted-url></p>
         </template>
         <lightning-button label={formLabels.previousButtonLabel} onclick={handlePrevious} class="slds-m-top_medium"></lightning-button>
         <template lwc:if={showNextButton}>
@@ -227,12 +227,6 @@
 
         <lightning-button label={formLabels.previousButtonLabel} onclick={handlePrevious} class="slds-m-top_medium"></lightning-button>
         <lightning-button label={formLabels.submitButtonLabel} onclick={handleCaseSubmit} class="slds-m-top_medium"></lightning-button>
-    </template>
-
-    <!-- Screen 4 -->
-    <template lwc:elseif={isScreen4}>
-        <!-- You can add any elements for screen 4 here -->
-        <p>{formLabels.finalStepText}</p>
     </template>
 
     <!-- Screen 1 (default screen) -->

@@ -13,7 +13,6 @@ export default class CustomerForm extends LightningElement {
     isScreen1 = true;
     isScreen2 = false;
     isScreen3 = false;
-    isScreen4 = false;
 
     // General error message
     @track errorMessage = '';
@@ -115,7 +114,38 @@ export default class CustomerForm extends LightningElement {
      branchPlaceholder: 'Select Branch',  // Placeholder for Branch combobox
 
      initialDropdownLabel: 'What is your request?',
-     initialDropdownPlaceholder: 'Select request type'
+     initialDropdownPlaceholder: 'Select request type',
+
+
+     // Labels for validation messages (add these to your existing formLabels)
+    firstNameError: 'First Name cannot be longer than 20 characters.',
+    lastNameError: 'Last Name cannot be longer than 20 characters.',
+    ssnError: 'Social Security Number must be in one of the following formats: ######### or ###-##-####.',
+    phoneError: 'Other Phone Number must be in one of the following formats: ########## or ###-###-####.',
+    claimedAmountError: 'Claimed amount cannot be greater than $15,000.',
+    submitError: 'All fields must be completed.',
+
+    // Spanish translations for the error messages
+    firstNameError_es: 'El nombre no puede tener más de 20 caracteres.',
+    lastNameError_es: 'El apellido no puede tener más de 20 caracteres.',
+    ssnError_es: 'El número de seguro social debe estar en uno de los siguientes formatos: ######### o ###-##-####.',
+    phoneError_es: 'El número de teléfono debe estar en uno de los siguientes formatos: ########## o ###-###-####.',
+    claimedAmountError_es: 'El monto reclamado no puede ser mayor de $15,000.',
+    submitError_es: 'Todos los campos deben completarse.',
+
+
+
+     // Toast messages
+     successToastTitle: 'The case has been created successfully',
+     successToastMessage: 'Today you will receive an email confirming we got your request with your ticket number. Your request should be processed between 24-48 hours. We will send you an email indicating if your request was approved or denied.',
+     errorToastTitle: 'We couldn\'t register your request',
+     errorToastMessage: 'Something happened! Your request was not able to be registered at this time. Please try again in a few moments. Excuse the inconvenience and thank you for understanding.',
+ 
+     // Spanish translations
+     successToastTitle_es: 'El caso ha sido creado con éxito',
+     successToastMessage_es: 'Hoy recibirá un correo electrónico confirmando que hemos recibido su solicitud con su número de ticket. Su solicitud debe ser procesada entre 24-48 horas. Le enviaremos un correo electrónico indicando si su solicitud fue aprobada o rechazada.',
+     errorToastTitle_es: 'No pudimos registrar su solicitud',
+     errorToastMessage_es: '¡Algo sucedió! Su solicitud no pudo ser registrada en este momento. Por favor, inténtelo de nuevo en unos momentos. Disculpe las molestias y gracias por su comprensión.'
     };
 
     // // Dropdown #1: options for first screen
@@ -241,6 +271,23 @@ export default class CustomerForm extends LightningElement {
         }
     }
 
+
+    // Navigation: Move to the previous screen
+    handlePrevious() {
+        if (this.isScreen4) {
+            this.isScreen4 = false;
+            this.isScreen3 = true;
+        } else if (this.isScreen3) {
+            this.isScreen3 = false;
+            this.isScreen2 = true;
+        } else if (this.isScreen2) {
+            this.isScreen2 = false;
+            this.isScreen1 = true;
+        }
+    }
+
+
+
     get isOption2or3() {
         return this.selectedFirstOption == 'option2' || this.selectedFirstOption == 'option3';
     }
@@ -293,33 +340,75 @@ export default class CustomerForm extends LightningElement {
     }
 
     handleCaseSubmit() {
-        // Iterate over formData using a for...in loop
-        // for (let key in this.formData) {
-        //     if (this.formData.hasOwnProperty(key)) {
-        //         console.log(`Field: ${key}, Value: ${this.formData[key]}`);
-        //     }
-        // }
-
-        // If any input field is blank, then return error.
-        if (!this.formData.firstNameDeceased || !this.formData.lastNameDeceased || !this.formData.funeralHomeName || 
-        !this.formData.disbursementPreference || !this.formData.dateOfDeath || !this.formData.claimedAmount ||
-        !this.formData.otherPhone || !this.formData.relationship || !this.formData.ssn || 
-        !(this.formData.funeralHomeNumber || (this.formData.branchTown && this.formData.branch)) ||
-        !this.deathCertificateFileName || !this.requestorIdFileName || !this.funeralHomeInvoiceFileName) {
-            this.showError = true;
-            this.errorMessage = 'All fields must be completed.'
-            return;
-        }
-
-        // If the claimed amount is greater than $15,000, then return.
-        if (this.formData.claimedAmount > 15000) {
-            this.showError = true;
-            this.errorMessage = 'Claimed amount cannot be greater than $15,000.'
-            return;
-        }
+        // Clear any previous errors
+        this.showError = false;
+        this.errorMessage = '';
 
          // Get the language preference from localStorage
-        const selectedLanguage = localStorage.getItem('selectedLanguage');
+         const selectedLanguage = localStorage.getItem('selectedLanguage');
+
+        // Use either English or Spanish based on the selected language
+        const errorMessages = {
+            firstNameError: selectedLanguage === 'es' ? this.formLabels.firstNameError_es : this.formLabels.firstNameError,
+            lastNameError: selectedLanguage === 'es' ? this.formLabels.lastNameError_es : this.formLabels.lastNameError,
+            ssnError: selectedLanguage === 'es' ? this.formLabels.ssnError_es : this.formLabels.ssnError,
+            phoneError: selectedLanguage === 'es' ? this.formLabels.phoneError_es : this.formLabels.phoneError,
+            claimedAmountError: selectedLanguage === 'es' ? this.formLabels.claimedAmountError_es : this.formLabels.claimedAmountError,
+            submitError: selectedLanguage === 'es' ? this.formLabels.submitError_es : this.formLabels.submitError
+        };
+
+        // Validate that all required fields are filled
+        if (!this.formData.firstNameDeceased || !this.formData.lastNameDeceased || !this.formData.funeralHomeName || 
+            !this.formData.disbursementPreference || !this.formData.dateOfDeath || !this.formData.claimedAmount ||
+            !this.formData.otherPhone || !this.formData.relationship || !this.formData.ssn || 
+            !(this.formData.funeralHomeNumber || (this.formData.branchTown && this.formData.branch)) ||
+            !this.deathCertificateFileName || !this.requestorIdFileName || !this.funeralHomeInvoiceFileName) {
+            
+            this.showError = true;
+            this.errorMessage = errorMessages.submitError;
+            return;
+        }
+
+        // Validate First Name and Last Name (Max 20 characters)
+        if (this.formData.firstNameDeceased.length > 20) {
+            this.showError = true;
+            this.errorMessage = errorMessages.firstNameError;
+            return;
+        }
+        if (this.formData.lastNameDeceased.length > 20) {
+            this.showError = true;
+            this.errorMessage = errorMessages.lastNameError;
+            return;
+        }
+
+        // Validate Social Security Number (SSN) pattern
+        const ssnWithoutDashes = /^\d{9}$/;
+        const ssnWithDashes = /^\d{3}-\d{2}-\d{4}$/;
+
+        if (!ssnWithoutDashes.test(this.formData.ssn) && !ssnWithDashes.test(this.formData.ssn)) {
+            this.showError = true;
+            this.errorMessage = errorMessages.ssnError;
+            return;
+        }
+
+        // Validate Other Phone Number (Must be 10 digits or in ###-###-#### format)
+        const phonePatternWithoutDashes = /^\d{10}$/;
+        const phonePatternWithDashes = /^\d{3}-\d{3}-\d{4}$/;
+
+        if (!phonePatternWithoutDashes.test(this.formData.otherPhone) && !phonePatternWithDashes.test(this.formData.otherPhone)) {
+            this.showError = true;
+            this.errorMessage = errorMessages.phoneError;
+            return;
+        }
+
+        // Validate Claimed Amount
+        if (this.formData.claimedAmount > 15000) {
+            this.showError = true;
+            this.errorMessage = errorMessages.claimedAmountError;
+            return;
+        }
+
+        
         
         // Update formData with language preference
         this.formData.languagePreference = selectedLanguage === 'es' ? 'ES' : 'EN';
@@ -352,7 +441,12 @@ export default class CustomerForm extends LightningElement {
                 this.linkFilesToCase(result.Id)
                     .then(() => {
                         this.handleSuccessToast(result.CaseNumber);
-                        window.location.href = "/s/my-cases";
+        
+                        // Delay the navigation to the next page by 4 seconds (4000 milliseconds)
+                        setTimeout(() => {
+                            window.location.href = "/s/my-cases";
+                        }, 4000);  // 4000 milliseconds = 4 seconds
+        
                     })
                     .catch(error => {
                         console.error('Error linking files to case:', error);
@@ -379,27 +473,64 @@ export default class CustomerForm extends LightningElement {
         });
     
     }  
-    //Success Toast Notification
-    handleSuccessToast(result) {
+
+    handleSuccessToast(caseNumber) {
+        // Get the selected language from localStorage or use default ('en')
+        const selectedLanguage = localStorage.getItem('selectedLanguage') || 'en';
+    
+        const successTitle = selectedLanguage === 'es' ? this.formLabels.successToastTitle_es : this.formLabels.successToastTitle;
+        const successMessage = selectedLanguage === 'es' ? this.formLabels.successToastMessage_es : this.formLabels.successToastMessage;
+    
         const evt = new ShowToastEvent({
-            title: `The case has been created successfully. Case Number: ${result}`,
-            message: `Today you will receive an email confirming we got your request with your ticket number.
-            We will send the email to the one you input in the form.
-            Your request should be processed between 24-48 hours. We will send you an email indicating if your request
-            was approved or denied.`,
+            title: `${successTitle}. Case Number: ${caseNumber}`,
+            message: successMessage,
             variant: 'success',
         });
         this.dispatchEvent(evt);
     }
+    // //Success Toast Notification
+    // handleSuccessToast(result) {
+    //     const evt = new ShowToastEvent({
+    //         title: `The case has been created successfully. Case Number: ${result}`,
+    //         message: `Today you will receive an email confirming we got your request with your ticket number.
+    //         We will send the email to the one you input in the form.
+    //         Your request should be processed between 24-48 hours. We will send you an email indicating if your request
+    //         was approved or denied.`,
+    //         variant: 'success',
+    //     });
+    //     this.dispatchEvent(evt);
+    // }
     //Error creating case toast notification
-    handleErrorToast() {
+    handleErrorToast(customMessage = null) {
+        // Get the selected language from localStorage or use default ('en')
+        const selectedLanguage = localStorage.getItem('selectedLanguage') || 'en';
+    
+        const errorTitle = selectedLanguage === 'es' ? this.formLabels.errorToastTitle_es : this.formLabels.errorToastTitle;
+        let errorMessage = selectedLanguage === 'es' ? this.formLabels.errorToastMessage_es : this.formLabels.errorToastMessage;
+    
+        // If a custom message is provided, use it (and translate if needed)
+        if (customMessage) {
+            errorMessage = selectedLanguage === 'es' ? this.translateErrorMessage(customMessage) : customMessage;
+        }
+    
         const evt = new ShowToastEvent({
-            title: 'We couldn\'t register your request',
-            message: 'Something Happened! Your request was not able to be registered at this time, please try again in a few moments. Excuse the inconvenience and thank you for understanding.',
+            title: errorTitle,
+            message: errorMessage,
             variant: 'error',
         });
         this.dispatchEvent(evt);
     }
+    
+
+
+    // handleErrorToast() {
+    //     const evt = new ShowToastEvent({
+    //         title: 'We couldn\'t register your request',
+    //         message: 'Something Happened! Your request was not able to be registered at this time, please try again in a few moments. Excuse the inconvenience and thank you for understanding.',
+    //         variant: 'error',
+    //     });
+    //     this.dispatchEvent(evt);
+    // }
 
     handleLanguageChange(event) {
         const newLang = event.detail.language;
@@ -626,7 +757,16 @@ export default class CustomerForm extends LightningElement {
     }
     
     
-    
+    translateErrorMessage(message) {
+        switch (message) {
+            case 'Case created, but files failed to attach.':
+                return 'Caso creado, pero los archivos no se pudieron adjuntar.';
+            case 'Error creating case.':
+                return 'Error al crear el caso.';
+            default:
+                return message;  // Return the default message if no translation is available
+        }
+    }
 
     handleInputChange(event) {
         const field = event.target.dataset.id;
