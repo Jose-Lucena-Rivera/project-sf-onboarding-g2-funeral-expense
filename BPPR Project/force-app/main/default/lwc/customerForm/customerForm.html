@@ -37,33 +37,41 @@
 
     <!-- Screen 3 -->
     <template lwc:elseif={isScreen3}>
+        <template lwc:if={showError}>
+            <div class="slds-text-color_error">{errorMessage}</div>
+        </template>
         <!-- Deceased customer information -->
         <h6>Deceased customer information:</h6>
         <lightning-input 
             label="First Name" 
             value={formData.firstNameDeceased}
             onchange={handleInputChange}
-            data-id="firstNameDeceased">
+            data-id="firstNameDeceased"
+            required>
         </lightning-input>
         <lightning-input 
             label="Last Name" 
             value={formData.lastNameDeceased}
             onchange={handleInputChange}
-            data-id="lastNameDeceased">
+            data-id="lastNameDeceased"
+            required>
         </lightning-input>
         <lightning-input 
-            label="Social Security Number" 
+            label="Social Security Number (XXX-XX-XXXX)"
             type="password" 
             value={formData.ssn}
             onchange={handleInputChange}
-            data-id="ssn">
+            data-id="ssn"
+            pattern="^\d{3}-?\d{2}-?\d{4}$"
+            required>
         </lightning-input>
         <lightning-input 
             label="Date of Death" 
             type="date" 
             value={formData.dateOfDeath}
             onchange={handleInputChange}
-            data-id="dateOfDeath">
+            data-id="dateOfDeath"
+            required>
         </lightning-input>
         <lightning-file-upload 
             label="Upload Death Certificate (PDF)"
@@ -71,7 +79,7 @@
             multiple="false"
             accept="[.pdf]"
             onuploadfinished={handleUploadFinished}
-            >
+            required>
         </lightning-file-upload>
 
         <!-- Requestor information -->
@@ -81,27 +89,31 @@
             read-only 
             value={formData.firstname}
             onchange={handleInputChange}
-            data-id="firstname">
+            data-id="firstname"
+            required>
         </lightning-input>
         <lightning-input 
             label="Last Name" 
             read-only 
             value={formData.lastname}
             onchange={handleInputChange}
-            data-id="lastname">
+            data-id="lastname"
+            required>
         </lightning-input>
         <lightning-input 
             label="Relationship" 
             value={formData.relationship}
             onchange={handleInputChange}
-            data-id="relationship">
+            data-id="relationship"
+            required>
         </lightning-input>
         <lightning-input 
             label="Email" 
             read-only type="email" 
             value={formData.email}
             onchange={handleInputChange}
-            data-id="email">
+            data-id="email"
+            required>
         </lightning-input>
         <lightning-input 
             label="Preferred Phone Number" 
@@ -109,14 +121,16 @@
             type="tel" 
             value={formData.preferredPhone}
             onchange={handleInputChange}
-            data-id="preferredPhone">
+            data-id="preferredPhone"
+            required>
         </lightning-input>
         <lightning-input 
             label="Other Phone Number" 
             type="tel" 
             value={formData.otherPhone}
             onchange={handleInputChange}
-            data-id="otherPhone">
+            data-id="otherPhone"
+            required>
         </lightning-input>
         <lightning-file-upload 
             label="Upload copy of requestor ID"
@@ -124,7 +138,7 @@
             multiple="false"
             accept={acceptedFormats}
             onuploadfinished={handleUploadFinished}
-            >
+            required>
         </lightning-file-upload>
 
         <!-- Disbursement Information -->
@@ -133,14 +147,16 @@
             label="Funeral Home Name"
             value={formData.funeralHomeName}
             onchange={handleInputChange}
-            data-id="funeralHomeName">
+            data-id="funeralHomeName"
+            required>
         </lightning-input>
         <lightning-input 
             label="Claimed Amount" 
             value={formData.claimedAmount}
             type="number"
             onchange={handleInputChange}
-            data-id="claimedAmount">
+            data-id="claimedAmount"
+            required>
         </lightning-input>
         <lightning-combobox
             name="thirdDropdown" 
@@ -148,14 +164,16 @@
             value={formData.disbursementPreference}
             placeholder="Select Disbursement preference"
             options={thirdDropdownOptions} 
-            onchange={handleThirdDropdownChange}>
+            onchange={handleThirdDropdownChange}
+            required>
         </lightning-combobox>
         <template lwc:if={isOptionDeposit}>
             <lightning-input 
                 label="Funeral Home Account Number"
                 value={formData.funeralHomeNumber}
                 onchange={handleInputChange}
-                data-id="funeralHomeNumber">
+                data-id="funeralHomeNumber"
+                required>
             </lightning-input>
         </template>
         <template lwc:elseif={isOptionBranch}>
@@ -165,7 +183,8 @@
                 value={selectedParentValue}
                 placeholder="Select Branch Town"
                 options={parentPicklistValues}
-                onchange={handleParentChange}>
+                onchange={handleParentChange}
+                required>
             </lightning-combobox>
             
             <lightning-combobox
@@ -174,7 +193,8 @@
                 value={selectedChildValue}
                 placeholder="Select Branch"
                 options={childPicklistValues}
-                onchange={handleChildChange}>
+                onchange={handleChildChange}
+                required>
             </lightning-combobox>
         </template>
         <lightning-file-upload 
@@ -183,8 +203,7 @@
             multiple="false"
             accept={acceptedFormats}
             onuploadfinished={handleUploadFinished}
-            
-            >
+            required>
         </lightning-file-upload>
 
         <!-- reCAPTCHA -->

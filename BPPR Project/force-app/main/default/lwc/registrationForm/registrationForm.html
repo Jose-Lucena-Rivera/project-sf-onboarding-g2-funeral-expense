@@ -11,9 +11,6 @@
             data-id="firstName"
             required>
         </lightning-input>
-        <!-- <template lwc:if={fieldErrors.firstName}>
-            <div class="slds-text-color_error">{fieldErrors.firstName}</div>
-        </template> -->
 
         <lightning-input
             label="Last Name"
@@ -22,9 +19,6 @@
             data-id="lastName"
             required>
         </lightning-input>
-        <!-- <template lwc:if={fieldErrors.lastName}>
-            <div class="slds-text-color_error">{fieldErrors.lastName}</div>
-        </template> -->
 
         <lightning-input
             label="Email"
@@ -32,11 +26,10 @@
             type="email"
             onchange={handleInputChange}
             data-id="email"
+            pattern={patterns.email}
+            message-when-pattern-mismatch="Please enter a valid email address."
             required>
         </lightning-input>
-        <!-- <template lwc:if={fieldErrors.email}>
-            <div class="slds-text-color_error">{fieldErrors.email}</div>
-        </template> -->
 
         <lightning-input
             label="Phone"
@@ -46,9 +39,6 @@
             data-id="phone"
             required>
         </lightning-input>
-        <!-- <template lwc:if={fieldErrors.phone}>
-            <div class="slds-text-color_error">{fieldErrors.phone}</div>
-        </template> -->
 
         <lightning-input
             label="Date of Birth"
@@ -58,9 +48,6 @@
             data-id="dateOfBirth"
             required>
         </lightning-input>
-        <!-- <template lwc:if={fieldErrors.dateOfBirth}>
-            <div class="slds-text-color_error">{fieldErrors.dateOfBirth}</div>
-        </template> -->
         
         <lightning-input
             label="Last 4 Digits of SSN"
@@ -68,11 +55,10 @@
             type="password"
             onchange={handleInputChange}
             data-id="ssn"
+            pattern="^[0-9]{4}$"
+            message-when-pattern-mismatch="Please enter the 4 last digits of your Social Security Number."
             required>
         </lightning-input>
-        <!-- <template lwc:if={fieldErrors.ssn}>
-            <div class="slds-text-color_error">{fieldErrors.ssn}</div>
-        </template> -->
 
         <lightning-textarea
             label="Street Address"
@@ -81,9 +67,6 @@
             data-id="street"
             required>
         </lightning-textarea>
-        <!-- <template lwc:if={fieldErrors.street}>
-            <div class="slds-text-color_error">{fieldErrors.street}</div>
-        </template> -->
 
         <lightning-input
             label="City"
@@ -92,9 +75,6 @@
             data-id="city"
             required>
         </lightning-input>
-        <!-- <template lwc:if={fieldErrors.city}>
-            <div class="slds-text-color_error">{fieldErrors.city}</div>
-        </template> -->
 
         <lightning-input
             label="State Address"
@@ -103,9 +83,6 @@
             data-id="state"
             required>
         </lightning-input>
-        <!-- <template lwc:if={fieldErrors.state}>
-            <div class="slds-text-color_error">{fieldErrors.state}</div>
-        </template> -->
 
         <lightning-input
             label="Country Address"
@@ -114,20 +91,16 @@
             data-id="country"
             required>
         </lightning-input>
-        <!-- <template lwc:if={fieldErrors.country}>
-            <div class="slds-text-color_error">{fieldErrors.country}</div>
-        </template> -->
 
         <lightning-input
-            label="Postal Code"
+            label="Zip/Postal Code"
             value={formFields.postalCode}
             onchange={handleInputChange}
             data-id="postalCode"
+            pattern="^\d{5}(-\d{4})?$"
+            message-when-pattern-mismatch="Please enter a valid Zip/Postal Code."
             required>
         </lightning-input>
-        <!-- <template lwc:if={fieldErrors.postalCode}>
-            <div class="slds-text-color_error">{fieldErrors.postalCode}</div>
-        </template> -->
 
         <lightning-input
             label="Password"
@@ -135,11 +108,10 @@
             value={formFields.password}
             onchange={handleInputChange}
             data-id="password"
+            pattern={patterns.password}
+            message-when-pattern-mismatch="Please enter a valid Zip/Postal Code."
             required>
         </lightning-input>
-        <!-- <template lwc:if={fieldErrors.password}>
-            <div class="slds-text-color_error">{fieldErrors.password}</div>
-        </template> -->
 
         <lightning-input
             label="Confirm Password"
@@ -149,9 +121,6 @@
             data-id="confirmPassword"
             required>
         </lightning-input>
-        <!-- <template lwc:if={fieldErrors.confirmPassword}>
-            <div class="slds-text-color_error">{fieldErrors.confirmPassword}</div>
-        </template> -->
 
         <lightning-button
             label="Submit"

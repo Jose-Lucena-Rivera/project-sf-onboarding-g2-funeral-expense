@@ -15,20 +15,24 @@ export default class CustomerForm extends LightningElement {
     isScreen3 = false;
     isScreen4 = false;
 
+    // General error message
+    @track errorMessage = '';
+    @track showError = false;
+
     //Track inputs of form Data
     @track formData = {
-        firstNameDeceased: '',
-        lastNameDeceased: '',
-        funeralHomeName: '',
-        disbursementPreference: '',
-        dateOfDeath: '',
-        claimedAmount: '',
-        otherPhone: '',
-        relationship: '',
-        ssn: '',
-        funeralHomeNumber: '',
-        branch: '',
-        branchTown: '',
+        firstNameDeceased: undefined,
+        lastNameDeceased: undefined,
+        funeralHomeName: undefined,
+        disbursementPreference: undefined,
+        dateOfDeath: undefined,
+        claimedAmount: undefined,
+        otherPhone: undefined,
+        relationship: undefined,
+        ssn: undefined,
+        funeralHomeNumber: undefined,
+        branch: undefined,
+        branchTown: undefined,
         //User Auto populated fields
         firstname:'',
         lastname:'',
@@ -36,6 +40,40 @@ export default class CustomerForm extends LightningElement {
         preferredPhone: '',
         accountId: '',
         accountName: '' // To store associated account name
+    };
+
+    // Define formLabels to store the dynamic labels for changing language
+    @track formLabels = {
+        // Labels for deceased customer information
+        firstNameLabel: 'First Name',
+        lastNameLabel: 'Last Name',
+        socialSecurityLabel: 'Social Security Number',
+        dateOfDeathLabel: 'Date of Death',
+        uploadDeathCertLabel: 'Upload Death Certificate (PDF)',
+
+        // Labels for requestor information
+        requestorFirstNameLabel: 'Requestor First Name',
+        requestorLastNameLabel: 'Requestor Last Name',
+        relationshipLabel: 'Relationship',
+        emailLabel: 'Email',
+        preferredPhoneLabel: 'Preferred Phone Number',
+        otherPhoneLabel: 'Other Phone Number',
+        uploadRequestorIDLabel: 'Upload copy of requestor ID',
+
+        // Labels for disbursement information
+        funeralHomeNameLabel: 'Funeral Home Name',
+        claimedAmountLabel: 'Claimed Amount',
+        disbursementPreferenceLabel: 'Disbursement Preference',
+        funeralHomeAccountLabel: 'Funeral Home Account Number',
+        branchTownLabel: 'Choose a Branch Town',
+        branchLabel: 'Choose a Branch',
+        uploadFuneralInvoiceLabel: 'Funeral Home Invoice',
+
+        // Other labels
+        legalNotificationLabel: 'I have read and accepted the legal notification above',
+        submitButtonLabel: 'Submit',
+        nextButtonLabel: 'Next',
+        previousButtonLabel: 'Previous'
     };
 
     // Dropdown #1: options for first screen
@@ -132,21 +170,6 @@ export default class CustomerForm extends LightningElement {
         }
     }
 
-    // Navigation: Move to the previous screen
-    handlePrevious() {
-        if (this.isScreen4) {
-            this.isScreen4 = false;
-            this.isScreen3 = true;
-        } else if (this.isScreen3) {
-            this.isScreen3 = false;
-            this.isScreen2 = true;
-        } else if (this.isScreen2) {
-            this.isScreen2 = false;
-            this.isScreen1 = true;
-        }
-    }
-
-
     get isOption2or3() {
         return this.selectedFirstOption == 'option2' || this.selectedFirstOption == 'option3';
     }
@@ -166,19 +189,6 @@ export default class CustomerForm extends LightningElement {
     get acceptedFormats() {
         return ['.pdf', '.png', '.jpeg'];
     }
-
-    // handleUploadFinished(event) {
-    //     const uploadedFiles = event.detail.files;
-    //     if (uploadedFiles.length > 0) {
-    //         // Store the document IDs of the uploaded files for later use
-    //         this.uploadedFileIds = uploadedFiles.map(file => file.documentId);
-            
-    //         console.log('Stored File IDs:', this.uploadedFileIds);  // Logging the file IDs for debugging purposes
-    //         alert('No. of files uploaded: ' + uploadedFiles.length);
-    //     } else {
-    //         console.log('No files were uploaded');
-    //     }
-    // }
    
     handleUploadFinished(event) {
         const uploadedFiles = event.detail.files;
@@ -204,6 +214,16 @@ export default class CustomerForm extends LightningElement {
         //     }
         // }
 
+        // If there is an error in any input field, return.
+        if (!this.formData.firstNameDeceased || !this.formData.lastNameDeceased || !this.formData.funeralHomeName || 
+        !this.formData.disbursementPreference || !this.formData.dateOfDeath || !this.formData.claimedAmount ||
+        !this.formData.otherPhone || !this.formData.relationship || !this.formData.ssn || 
+        !(this.formData.funeralHomeNumber || (this.formData.branchTown && this.formData.branch))) {
+            this.showError = true;
+            this.errorMessage = 'All fields must be completed.'
+            return;
+        }
+
         createAdvanceFundCase({
             firstNameDeceased: this.formData.firstNameDeceased,
             lastNameDeceased: this.formData.lastNameDeceased,
@@ -223,12 +243,10 @@ export default class CustomerForm extends LightningElement {
             branchTown: this.formData.branchTown,
             branch: this.formData.branch
         })
-            
-        
         .then(result => {
-            console.log(result);
-            result = JSON.parse(JSON.stringify(result));
-            console.log(result);
+            // console.log(result);
+            // result = JSON.parse(JSON.stringify(result));
+            // console.log(result);
 
             // Now link the uploaded files to the newly created case
             if (this.uploadedFileIds.length > 0) {
@@ -241,9 +259,7 @@ export default class CustomerForm extends LightningElement {
             } else {
                 this.handleErrorToast();
             }
-           // window.location.href = "/s/my-cases";
-
-
+            window.location.href = "/s/my-cases";
         })
         .catch(error => {
             // Log the error and show an error toast
@@ -338,30 +354,7 @@ export default class CustomerForm extends LightningElement {
             });
     }
 
-    // linkFilesToCase(caseId) {
-    //     // Call Apex method to link the files to the case
-    //     linkFilesToCaseApex({ caseId: caseId, fileIds: this.uploadedFileIds })
-    //         .then(() => {
-    //             console.log('Files successfully linked to the case');
-    //             // Optionally show a toast or handle successful linking
-    //             const evt = new ShowToastEvent({
-    //                 title: 'Success',
-    //                 message: 'Files were successfully attached to the case',
-    //                 variant: 'success',
-    //             });
-    //             this.dispatchEvent(evt);
-    //         })
-    //         .catch(error => {
-    //             console.error('Error linking files to case:', error);
-    //             // Optionally show a toast or handle error
-    //             const evt = new ShowToastEvent({
-    //                 title: 'Error',
-    //                 message: 'Failed to attach files to the case. Please try again.',
-    //                 variant: 'error',
-    //             });
-    //             this.dispatchEvent(evt);
-    //         });
-    // }
+
     linkFilesToCase(caseId) {
         if (this.uploadedFileIds.length > 0) {
             // Call Apex method to link the files to the case

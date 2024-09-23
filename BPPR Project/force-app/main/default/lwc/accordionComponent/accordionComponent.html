@@ -1,0 +1,40 @@
+<template>
+    <lightning-card>
+        <!-- Dynamic Section with Text Above Accordion -->
+        <div class="section-text">
+            <h2 class="section-title">{sectionTitle}</h2>
+            <template for:each={sectionParagraphs} for:item="paragraph" >
+                    <p key={paragraph} class="paragraph-text" >{paragraph}</p>
+            </template>
+        
+
+         <!-- Button Section -->
+            <div class="button-container">
+                <button class="register-button" onclick={navigateToForm}>
+                    <span class="button-text">{registerText}</span>
+                </button>
+            </div>
+        </div>
+    
+
+        <!-- Accordion Title -->
+        <div class="accordion-title">
+            <h3 class="accordion-title-text">{accordionTitle}</h3>
+        </div>
+
+        <!-- Accordion Section -->
+        <div class="accordion">
+            <template for:each={items} for:item="item">
+                <div key={item.id} class="accordion-item">
+                    <button class="accordion-header" onclick={toggleAccordion} data-id={item.id}>
+                        {item.header}
+                        <lightning-icon icon-name={item.icon} class="icon" alternative-text="Toggle"></lightning-icon>
+                    </button>
+                    <div if:true={item.isOpen} class="accordion-content">
+                        <p>{item.content}</p>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </lightning-card>
+</template>

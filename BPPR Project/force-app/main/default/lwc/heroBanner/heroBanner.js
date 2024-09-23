@@ -1,5 +1,4 @@
-import { LightningElement, api } from 'lwc';
-import LANG from '@salesforce/i18n/lang';
+import { LightningElement } from 'lwc';
 import HERO_BANNER from '@salesforce/resourceUrl/hero_banner';
 
 export default class HeroBanner extends LightningElement {
@@ -8,9 +7,15 @@ export default class HeroBanner extends LightningElement {
     heroBannerUrl = HERO_BANNER;
 
     connectedCallback() {
-        this.updateText(LANG);
+        // Retrieve the initial language either from URL or localStorage
+        const urlParams = new URLSearchParams(window.location.search);
+        const langFromUrl = urlParams.get('language');
+        const langFromStorage = localStorage.getItem('selectedLanguage');
 
-        // Add an event listener for language changes
+        let initialLanguage = langFromUrl || langFromStorage || 'en_US';
+        this.updateText(initialLanguage);
+
+        // Add event listener for language changes
         window.addEventListener('languagechange', this.handleLanguageChange.bind(this));
     }
 
@@ -20,7 +25,7 @@ export default class HeroBanner extends LightningElement {
     }
 
     updateText(language) {
-        if (language === 'es_PR') {
+        if (language === 'es') {
             this.text1 = 'Estamos aquí para ayudarte';
             this.text2 = 'durante este momento difícil';
         } else {

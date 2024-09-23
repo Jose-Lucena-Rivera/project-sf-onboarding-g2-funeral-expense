@@ -1,24 +1,43 @@
 .language-selector {
     display: flex;
     align-items: center;
-    justify-content: flex-end; /* Aligns the selector to the right */
+    justify-content: flex-end;
     margin: 1rem;
 }
 
+.world-icon {
+    margin-left: 0.5rem; /* Space between dropdown and icon */
+    font-size: 0.875rem; /* Match the size of the dropdown text */
+}
+
 .language-selector select {
-    appearance: none; /* Removes default styling of the dropdown */
-    /*background-color: #073579; Background color */
-    color: #073579; /* Text color */
+    appearance: none;
+    background: none; /* Removes background color */
+    color: #073579;
     border: none; /* Removes border */
-    padding: 0.5rem 1rem; /* Padding for the dropdown */
-    font-size: 0.875rem; /* Font size */
-    border-radius: 4px; /* Rounded corners */
-    cursor: pointer; /* Pointer cursor on hover */
-    outline: none; /* Removes outline on focus */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem; /* Match the icon size */
+    border-radius: 4px;
+    cursor: pointer;
+    outline: none;
 }
 
 .language-selector select option {
-    background-color: #ffffff; /* Dropdown option background color */
-    color: #000000; /* Dropdown option text color */
+    background-color: #ffffff;
+    color: #000000;
+}
+
+/* Hover effect for the dropdown text */
+.language-selector select:hover {
+    color: #2278C9; /* Changes text color on hover */
+}
+
+.language-selector select:focus {
+    outline: none;
+}
+
+/* Custom underline on hover */
+.language-selector select:hover {
+    text-decoration: underline;
+    text-decoration-color: #2278C9; /* Custom underline color */
 }

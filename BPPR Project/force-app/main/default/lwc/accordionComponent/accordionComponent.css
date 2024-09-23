@@ -1,0 +1,82 @@
+.section-title {
+    font-size: 24px; /* Increased size for more prominence */
+    
+    color: #073579;
+    margin-bottom: 15px; /* More space below the title */
+}
+
+.paragraph-text {
+    font-size: 18px; /* Increased size for better readability */
+    color: black;
+    margin-bottom: 20px; /* Increased spacing below the paragraph */
+}
+
+.accordion-title-text {
+    font-size: 20px; /* Larger title for the accordion section */
+    
+    color: #073579;
+    margin-top: 20px;
+    margin-bottom: 20px; /* Increased margin for better separation */
+}
+
+.accordion-header {
+    width: 100%;
+    background-color: #f9f9f9; /* Light background for better contrast */
+    color: #073579;
+    text-align: left;
+    padding: 15px; /* Increased padding for a more spacious feel */
+    font-size: 18px; /* Slightly larger font for headers */
+    font-weight: bold;
+    border: none; /* Removed exterior border */
+    cursor: pointer;
+    outline: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.3s ease; /* Smooth transition */
+    border-bottom: 1px solid #e0e0e0; /* Softer border for a modern look */
+}
+
+.accordion-header:hover {
+    background-color: #e8f0fe; /* Subtle hover effect */
+}
+
+.accordion-content {
+    background-color: #ffffff; /* Clean white background */
+    padding: 15px; /* Increased padding for comfort */
+    border: 1px solid #e0e0e0; /* Soft border for content */
+    border-top: none; /* Seamless look with header */
+    border-radius: 8px; /* Rounded corners for modern feel */
+}
+
+.accordion-content p {
+    margin: 0;
+    color: black;
+    font-size: 16px; /* Slightly larger font for better readability */
+}
+
+.icon {
+    margin-left: auto;
+    color: #073579;
+}
+
+.button-container {
+    margin: 20px 0; /* Space above and below the button */
+}
+
+.register-button {
+    background-color: transparent; /* No fill by default */
+    border: 2px solid #98CAEC; /* Border color */
+    border-radius: 20px; /* Make it round */
+    color: #073579; /* Text color */
+    font-weight: bold; /* Bold text */
+    font-size: 16px; /* Font size */
+    padding: 10px 20px; /* Padding to make it larger */
+    cursor: pointer; /* Change cursor on hover */
+    transition: background-color 0.3s, color 0.3s; /* Smooth transition */
+}
+
+.register-button:hover {
+    background-color: #073579; /* Fill color on hover */
+    color: white; /* Change text color on hover */
+}
