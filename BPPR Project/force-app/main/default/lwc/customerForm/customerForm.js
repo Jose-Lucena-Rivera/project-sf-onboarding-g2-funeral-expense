@@ -42,7 +42,7 @@ export default class CustomerForm extends LightningElement {
         accountName: '' // To store associated account name
     };
 
-    // Define formLabels to store the dynamic labels for changing language
+// Define formLabels to store the dynamic labels for changing language
     @track formLabels = {
         // Labels for deceased customer information
         firstNameLabel: 'First Name',
@@ -69,11 +69,26 @@ export default class CustomerForm extends LightningElement {
         branchLabel: 'Choose a Branch',
         uploadFuneralInvoiceLabel: 'Funeral Home Invoice',
 
-        // Other labels
-        legalNotificationLabel: 'I have read and accepted the legal notification above',
-        submitButtonLabel: 'Submit',
-        nextButtonLabel: 'Next',
-        previousButtonLabel: 'Previous'
+       // Other labels
+       legalNotificationLabel: 'I have read and accepted the legal notification above',
+       submitButtonLabel: 'Submit',
+       nextButtonLabel: 'Next',
+       previousButtonLabel: 'Previous',
+
+       // Text content (paragraphs, etc.)
+       requestSupportText: 'We are here to support you during this difficult time.',
+       requirementsText: 'Requirements to request processing:',
+       deathCertificateText: 'Death Certificate (original or copy)',
+       funeralHomeBillText: 'Funeral home bill',
+       bankIssuanceText: 'The Bank will issue an official check payable to the funeral home for the amount billed up to the maximum permitted by law ($15,000) of the funds deposited with Popular.',
+       invoicePaidText: 'Is the funeral home invoice paid?',
+       unpaidInvoiceInfo: 'To request an advance for funeral expenses the invoice must be unpaid. You can request a general advance, for more information on how to request this visit:',
+       visitLinkMessage: 'Please visit',
+       finalStepText: 'Screen 4: Final step or confirmation.',
+       supportMessage: 'We are here to support you during this difficult time.',
+       requestMessage: 'What is your request?',
+       requestTypeLabel: 'What is your request?',
+       fileUploadedText: 'File uploaded successfully'
     };
 
     // Dropdown #1: options for first screen
@@ -104,6 +119,9 @@ export default class CustomerForm extends LightningElement {
     @track uploadedFileIds = [];
     dependentValuesMap = {}; // To store the map returned from Apex
 
+    @track deathCertificateFileName;
+    @track requestorIdFileName;
+    @track funeralHomeInvoiceFileName;
 
     // Handle dropdown selections for Dropdown #1
     handleFirstDropdownChange(event) {
@@ -136,12 +154,38 @@ export default class CustomerForm extends LightningElement {
         this.formData.branch = event.detail.value;
     }
 
+    handleLanguageChange(event) {
+        const newLang = event.detail.language;
+        this.updateFormLabels(newLang);
+    
+        // Store the selected language in localStorage
+        localStorage.setItem('selectedLanguage', newLang);
+    }
+       
+
     connectedCallback() {
         // Fetch initial picklist values on load
         this.fetchParentPicklistValues();
         // Fetch current user information
         this.fetchCurrentUserInfo();
+    
+        const urlParams = new URLSearchParams(window.location.search);
+        const langFromUrl = urlParams.get('language');
+        const langFromStorage = localStorage.getItem('selectedLanguage');
+
+        // Default to 'en_US' if no language is found
+        let initialLanguage = langFromUrl || langFromStorage || 'en_US';
+        this.updateFormLabels(initialLanguage);
+
+        // Add event listener for language changes
+        window.addEventListener('languagechange', this.handleLanguageChange.bind(this));
     }
+
+    disconnectedCallback() {
+        // Clean up the event listener when the component is removed
+        window.removeEventListener('languagechange', this.handleLanguageChange.bind(this));
+    }
+
 
     get showNextButton() {
         // For screen 1: only show the next button if Option 1 is selected
@@ -186,6 +230,18 @@ export default class CustomerForm extends LightningElement {
         return this.formData.disbursementPreference == 'Pick-up at branch';
     }
 
+    get isDeathCertificateUploaded() {
+        return this.deathCertificateFileName != undefined;
+    }
+
+    get isRequestorIdUploaded() {
+        return this.requestorIdFileName != undefined;
+    }
+
+    get isFuneralHomeInvoiceUploaded() {
+        return this.funeralHomeInvoiceFileName != undefined;
+    }
+
     get acceptedFormats() {
         return ['.pdf', '.png', '.jpeg'];
     }
@@ -197,10 +253,13 @@ export default class CustomerForm extends LightningElement {
         if (uploadedFiles.length > 0) {
             uploadedFiles.forEach(file => {
                 this.uploadedFileIds.push(file.documentId);  // Add each new file ID to the array
+
+                this[event.target.dataset.id] = file.name;
             });
             
             console.log('All stored file IDs:', this.uploadedFileIds);  // Logging for debugging purposes
             alert('No. of files uploaded: ' + uploadedFiles.length);
+
         } else {
             console.log('No files were uploaded');
         }
@@ -299,6 +358,15 @@ export default class CustomerForm extends LightningElement {
         });
         this.dispatchEvent(evt);
     }
+
+    handleLanguageChange(event) {
+        const newLang = event.detail.language;
+        this.updateFormLabels(newLang);
+
+        // Store the selected language in localStorage
+        localStorage.setItem('selectedLanguage', newLang);
+    }
+    
         
 
 
@@ -383,6 +451,90 @@ export default class CustomerForm extends LightningElement {
             console.log('No files to link to the case');
         }
     }
+
+
+    updateFormLabels(language) {
+        if (language === 'es') {
+            // Set Spanish labels and text
+            this.formLabels.firstNameLabel = 'Nombre';
+            this.formLabels.lastNameLabel = 'Apellido';
+            this.formLabels.socialSecurityLabel = 'Número de Seguro Social';
+            this.formLabels.dateOfDeathLabel = 'Fecha de Defunción';
+            this.formLabels.uploadDeathCertLabel = 'Subir Certificado de Defunción (PDF)';
+            this.formLabels.requestorFirstNameLabel = 'Nombre del solicitante';
+            this.formLabels.requestorLastNameLabel = 'Apellido del solicitante';
+            this.formLabels.relationshipLabel = 'Relación';
+            this.formLabels.emailLabel = 'Correo electrónico';
+            this.formLabels.preferredPhoneLabel = 'Número de teléfono preferido';
+            this.formLabels.otherPhoneLabel = 'Otro número de teléfono';
+            this.formLabels.uploadRequestorIDLabel = 'Subir copia de identificación del solicitante';
+            this.formLabels.funeralHomeNameLabel = 'Nombre de la funeraria';
+            this.formLabels.claimedAmountLabel = 'Monto reclamado';
+            this.formLabels.disbursementPreferenceLabel = 'Preferencia de desembolso';
+            this.formLabels.funeralHomeAccountLabel = 'Número de cuenta de la funeraria';
+            this.formLabels.branchTownLabel = 'Seleccione una ciudad de sucursal';
+            this.formLabels.branchLabel = 'Seleccione una sucursal';
+            this.formLabels.uploadFuneralInvoiceLabel = 'Subir factura de la funeraria';
+            this.formLabels.legalNotificationLabel = 'He leído y acepto la notificación legal anterior';
+            this.formLabels.submitButtonLabel = 'Enviar';
+            this.formLabels.nextButtonLabel = 'Siguiente';
+            this.formLabels.previousButtonLabel = 'Anterior';
+
+            // Spanish translations for <p> tags
+            this.formLabels.requestSupportText = 'Estamos aquí para apoyarte en este momento difícil.';
+            this.formLabels.requirementsText = 'Requisitos para solicitar procesamiento:';
+            this.formLabels.deathCertificateText = 'Certificado de Defunción (original o copia)';
+            this.formLabels.funeralHomeBillText = 'Factura de la funeraria';
+            this.formLabels.bankIssuanceText = 'El Banco emitirá un cheque oficial pagadero a la funeraria por el monto facturado hasta el máximo permitido por la ley ($15,000) de los fondos depositados en Popular.';
+            this.formLabels.invoicePaidText = '¿La factura de la funeraria está pagada?';
+            this.formLabels.unpaidInvoiceInfo = 'Para solicitar un adelanto para gastos funerarios, la factura debe estar impaga. Puede solicitar un adelanto general, para obtener más información sobre cómo solicitar esto visite:';
+            this.formLabels.visitLinkMessage = 'Por favor visita';
+            this.formLabels.finalStepText = 'Pantalla 4: Paso final o confirmación.';
+            this.formLabels.supportMessage = 'Estamos aquí para apoyarte durante este momento difícil.';
+            this.formLabels.requestMessage = '¿Cuál es tu solicitud?';
+            this.formLabels.fileUploadedText = 'Archivo subido con éxito';
+        } else {
+            // English (default) labels and text
+            this.formLabels.firstNameLabel = 'First Name';
+            this.formLabels.lastNameLabel = 'Last Name';
+            this.formLabels.socialSecurityLabel = 'Social Security Number';
+            this.formLabels.dateOfDeathLabel = 'Date of Death';
+            this.formLabels.uploadDeathCertLabel = 'Upload Death Certificate (PDF)';
+            this.formLabels.requestorFirstNameLabel = 'Requestor First Name';
+            this.formLabels.requestorLastNameLabel = 'Requestor Last Name';
+            this.formLabels.relationshipLabel = 'Relationship';
+            this.formLabels.emailLabel = 'Email';
+            this.formLabels.preferredPhoneLabel = 'Preferred Phone Number';
+            this.formLabels.otherPhoneLabel = 'Other Phone Number';
+            this.formLabels.uploadRequestorIDLabel = 'Upload copy of requestor ID';
+            this.formLabels.funeralHomeNameLabel = 'Funeral Home Name';
+            this.formLabels.claimedAmountLabel = 'Claimed Amount';
+            this.formLabels.disbursementPreferenceLabel = 'Disbursement Preference';
+            this.formLabels.funeralHomeAccountLabel = 'Funeral Home Account Number';
+            this.formLabels.branchTownLabel = 'Choose a Branch Town';
+            this.formLabels.branchLabel = 'Choose a Branch';
+            this.formLabels.uploadFuneralInvoiceLabel = 'Funeral Home Invoice';
+            this.formLabels.legalNotificationLabel = 'I have read and accepted the legal notification above';
+            this.formLabels.submitButtonLabel = 'Submit';
+            this.formLabels.nextButtonLabel = 'Next';
+            this.formLabels.previousButtonLabel = 'Previous';
+
+            // English translations for <p> tags
+            this.formLabels.requestSupportText = 'We are here to support you during this difficult time.';
+            this.formLabels.requirementsText = 'Requirements to request processing:';
+            this.formLabels.deathCertificateText = 'Death Certificate (original or copy)';
+            this.formLabels.funeralHomeBillText = 'Funeral home bill';
+            this.formLabels.bankIssuanceText = 'The Bank will issue an official check payable to the funeral home for the amount billed up to the maximum permitted by law ($15,000) of the funds deposited with Popular.';
+            this.formLabels.invoicePaidText = 'Is the funeral home invoice paid?';
+            this.formLabels.unpaidInvoiceInfo = 'To request an advance for funeral expenses the invoice must be unpaid. You can request a general advance, for more information on how to request this visit:';
+            this.formLabels.visitLinkMessage = 'Please visit';
+            this.formLabels.finalStepText = 'Screen 4: Final step or confirmation.';
+            this.formLabels.supportMessage = 'We are here to support you during this difficult time.';
+            this.formLabels.requestMessage = 'What is your request?';
+            this.formLabels.fileUploadedText = 'File uploaded successfully';
+        }
+    }
+    
     
     
 

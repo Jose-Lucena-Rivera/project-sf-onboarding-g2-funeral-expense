@@ -5,7 +5,7 @@
         </template>
 
         <lightning-input
-            label="First Name"
+            label={labels.firstName}
             value={formFields.firstName}
             onchange={handleInputChange}
             data-id="firstName"
@@ -13,7 +13,7 @@
         </lightning-input>
 
         <lightning-input
-            label="Last Name"
+            label={labels.lastName}
             value={formFields.lastName}
             onchange={handleInputChange}
             data-id="lastName"
@@ -21,7 +21,7 @@
         </lightning-input>
 
         <lightning-input
-            label="Email"
+            label={labels.email}
             value={formFields.email}
             type="email"
             onchange={handleInputChange}
@@ -32,7 +32,7 @@
         </lightning-input>
 
         <lightning-input
-            label="Phone"
+            label={labels.phone}
             value={formFields.phone}
             type="tel"
             onchange={handleInputChange}
@@ -41,27 +41,27 @@
         </lightning-input>
 
         <lightning-input
-            label="Date of Birth"
+            label={labels.dateOfBirth}
             value={formFields.dateOfBirth}
             type="date"
             onchange={handleInputChange}
             data-id="dateOfBirth"
             required>
         </lightning-input>
-        
+
         <lightning-input
-            label="Last 4 Digits of SSN"
+            label={labels.ssn}
             value={formFields.ssn}
             type="password"
             onchange={handleInputChange}
             data-id="ssn"
             pattern="^[0-9]{4}$"
-            message-when-pattern-mismatch="Please enter the 4 last digits of your Social Security Number."
+            message-when-pattern-mismatch="Please enter the last 4 digits of your Social Security Number."
             required>
         </lightning-input>
 
         <lightning-textarea
-            label="Street Address"
+            label={labels.street}
             value={formFields.street}
             onchange={handleInputChange}
             data-id="street"
@@ -69,7 +69,7 @@
         </lightning-textarea>
 
         <lightning-input
-            label="City"
+            label={labels.city}
             value={formFields.city}
             onchange={handleInputChange}
             data-id="city"
@@ -77,7 +77,7 @@
         </lightning-input>
 
         <lightning-input
-            label="State Address"
+            label={labels.state}
             value={formFields.state}
             onchange={handleInputChange}
             data-id="state"
@@ -85,7 +85,7 @@
         </lightning-input>
 
         <lightning-input
-            label="Country Address"
+            label={labels.country}
             value={formFields.country}
             onchange={handleInputChange}
             data-id="country"
@@ -93,39 +93,37 @@
         </lightning-input>
 
         <lightning-input
-            label="Zip/Postal Code"
+            label={labels.postalCode}
             value={formFields.postalCode}
+            type="text"
             onchange={handleInputChange}
             data-id="postalCode"
-            pattern="^\d{5}(-\d{4})?$"
-            message-when-pattern-mismatch="Please enter a valid Zip/Postal Code."
+            pattern={patterns.postalCode}
+            message-when-pattern-mismatch="Please enter a valid postal code."
             required>
         </lightning-input>
 
         <lightning-input
-            label="Password"
-            type="password"
+            label={labels.password}
             value={formFields.password}
+            type="password"
             onchange={handleInputChange}
             data-id="password"
-            pattern={patterns.password}
-            message-when-pattern-mismatch="Please enter a valid Zip/Postal Code."
             required>
         </lightning-input>
 
         <lightning-input
-            label="Confirm Password"
-            type="password"
+            label={labels.confirmPassword}
             value={formFields.confirmPassword}
+            type="password"
             onchange={handleInputChange}
             data-id="confirmPassword"
             required>
         </lightning-input>
 
         <lightning-button
-            label="Submit"
-            onclick={handleSubmit}
-            variant="brand">
+            label={labels.submit}
+            onclick={handleSubmit}>
         </lightning-button>
     </lightning-card>
 </template>

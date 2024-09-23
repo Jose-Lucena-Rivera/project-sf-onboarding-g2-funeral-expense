@@ -80,7 +80,7 @@ export default class AccordionComponent extends LightningElement {
     }
 
     navigateToForm() {
-        window.location.href = 'https://cunning-koala-g913l3-dev-ed.trailblaze.my.site.com/bppr/s/case-form';
+        window.location.href = 'https://cunning-koala-g913l3-dev-ed.trailblaze.my.site.com/bppr/s/login/SelfRegister';
     }
 
     get items() {

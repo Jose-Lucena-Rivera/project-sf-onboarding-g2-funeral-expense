@@ -79,8 +79,14 @@
             multiple="false"
             accept="[.pdf]"
             onuploadfinished={handleUploadFinished}
+            data-id="deathCertificateFileName"
             required>
         </lightning-file-upload>
+        <template if:true={isDeathCertificateUploaded}>
+            <div class="slds-text-color_success">
+                {deathCertificateFileName}
+            </div>
+        </template>
 
         <!-- Requestor information -->
         <h6>Requestor information:</h6>
@@ -138,8 +144,14 @@
             multiple="false"
             accept={acceptedFormats}
             onuploadfinished={handleUploadFinished}
+            data-id="requestorIdFileName"
             required>
         </lightning-file-upload>
+        <template if:true={isRequestorIdUploaded}>
+            <div class="slds-text-color_success">
+                {requestorIdFileName}
+            </div>
+        </template>
 
         <!-- Disbursement Information -->
         <h6>Disbursement Information:</h6>
@@ -203,8 +215,15 @@
             multiple="false"
             accept={acceptedFormats}
             onuploadfinished={handleUploadFinished}
+            data-id="funeralHomeInvoiceFileName"
             required>
         </lightning-file-upload>
+        <template if:true={isFuneralHomeInvoiceUploaded}>
+            <div class="slds-text-color_success">
+                {funeralHomeInvoiceFileName}
+            </div>
+        </template>
+        
 
         <!-- reCAPTCHA -->
         <c-re-c-a-p-t-c-h-a></c-re-c-a-p-t-c-h-a>

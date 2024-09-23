@@ -3,7 +3,6 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import selfRegister from '@salesforce/apex/LightningSelfRegisterLWCController.selfRegister';
 
 export default class RegistrationForm extends LightningElement {
-    // Form fields
     @track formFields = {
         firstName: undefined,
         lastName: undefined,
@@ -20,6 +19,9 @@ export default class RegistrationForm extends LightningElement {
         confirmPassword: undefined
     }
 
+    // Default language is English
+    @track labels = this.getEnglishLabels();
+
     patterns = {
         password: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':\"\\|,.<>\/?]).{8,}$/,
         postalCode: /^\d{5}(-\d{4})?$/,
@@ -27,11 +29,18 @@ export default class RegistrationForm extends LightningElement {
         email: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
     }
 
-    // General error message
     @track errorMessage = '';
     @track showError = false;
 
-    // Handle when HTML input changes
+    connectedCallback() {
+        this.checkLanguage();
+        window.addEventListener('languagechange', this.handleLanguageChange.bind(this));
+    }
+
+    disconnectedCallback() {
+        window.removeEventListener('languagechange', this.handleLanguageChange.bind(this));
+    }
+
     handleInputChange(event) {
         const field = event.target.dataset.id;
         this.formFields[field] = event.target.value;
@@ -41,25 +50,25 @@ export default class RegistrationForm extends LightningElement {
         this.showError = false;
         this.errorMessage = '';
 
-        // If there is an error in any input field, return.
+        // Check if any required field is missing
         if (!this.formFields.firstName || !this.formFields.lastName || !this.formFields.email ||
         !this.formFields.phone || !this.formFields.dateOfBirth || !this.formFields.ssn ||
         !this.formFields.street || !this.formFields.city || !this.formFields.state ||
         !this.formFields.country || !this.formFields.postalCode || !this.formFields.password ||
         !this.formFields.confirmPassword) {
             this.showError = true;
-            this.errorMessage = 'All fields must be completed.'
+            this.errorMessage = this.labels.allFieldsError;
             return;
         }
 
-        // Validate that password is the same as confirmPassword.
+        // Validate password match
         if (this.formFields.password !== this.formFields.confirmPassword) {
             this.showError = true;
-            this.errorMessage = 'Passwords do not match.'
+            this.errorMessage = this.labels.passwordMismatch;
             return;
         }
 
-        // Call the Apex method for server-side registration
+        // Call Apex method for registration
         selfRegister({
             firstname: this.formFields.firstName,
             lastname: this.formFields.lastName,
@@ -75,7 +84,7 @@ export default class RegistrationForm extends LightningElement {
             password: this.formFields.password,
             confirmPassword: this.formFields.confirmPassword,
             accountId: "", 
-            regConfirmUrl: '/register/confirm', // Replace with actual confirmation URL
+            regConfirmUrl: '/register/confirm',
             startUrl: '/'
         })
         .then(result => {
@@ -93,17 +102,81 @@ export default class RegistrationForm extends LightningElement {
     }
 
     handleRegisterSuccess() {
-        this.showSuccessToast()
+        this.showSuccessToast();
         window.location.href = "/s/case-form";
-        
     }
 
     showSuccessToast() {
         const event = new ShowToastEvent({
-            title: 'Account has been created,',
-            message: 'Register was successful!',
+            title: this.labels.accountCreatedTitle,
+            message: this.labels.registerSuccess,
             variant: 'success',
         });
         this.dispatchEvent(event);
+    }
+
+    handleLanguageChange(event) {
+        const selectedLanguage = event.detail.language;
+        if (selectedLanguage === 'es') {
+            this.labels = this.getSpanishLabels();
+        } else {
+            this.labels = this.getEnglishLabels();
+        }
+    }
+
+    checkLanguage() {
+        const params = new URLSearchParams(window.location.search);
+        const language = params.get('language') || localStorage.getItem('selectedLanguage');
+        if (language === 'es') {
+            this.labels = this.getSpanishLabels();
+        } else {
+            this.labels = this.getEnglishLabels();
+        }
+    }
+
+    getEnglishLabels() {
+        return {
+            firstName: 'First Name',
+            lastName: 'Last Name',
+            email: 'Email',
+            phone: 'Phone',
+            dateOfBirth: 'Date of Birth',
+            ssn: 'Last 4 Digits of SSN',
+            street: 'Street Address',
+            city: 'City',
+            state: 'State Address',
+            country: 'Country Address',
+            postalCode: 'Zip/Postal Code',
+            password: 'Password',
+            confirmPassword: 'Confirm Password',
+            submit: 'Submit',
+            allFieldsError: 'All fields must be completed.',
+            passwordMismatch: 'Passwords do not match.',
+            accountCreatedTitle: 'Account has been created,',
+            registerSuccess: 'Register was successful!'
+        };
+    }
+
+    getSpanishLabels() {
+        return {
+            firstName: 'Nombre',
+            lastName: 'Apellido',
+            email: 'Correo Electrónico',
+            phone: 'Teléfono',
+            dateOfBirth: 'Fecha de Nacimiento',
+            ssn: 'Últimos 4 dígitos del SSN',
+            street: 'Dirección',
+            city: 'Ciudad',
+            state: 'Estado',
+            country: 'País',
+            postalCode: 'Código Postal',
+            password: 'Contraseña',
+            confirmPassword: 'Confirmar Contraseña',
+            submit: 'Enviar',
+            allFieldsError: 'Todos los campos deben completarse.',
+            passwordMismatch: 'Las contraseñas no coinciden.',
+            accountCreatedTitle: 'Cuenta ha sido creada,',
+            registerSuccess: '¡Registro exitoso!'
+        };
     }
 }
