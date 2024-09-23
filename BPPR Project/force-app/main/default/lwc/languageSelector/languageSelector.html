@@ -1,9 +1,11 @@
 <template>
-    <div class="language-selector">
-        <select id="languageSelect" onchange={handleLanguageChange} value={selectedLanguage}>
-            <option value="en_US">EN</option>
-            <option value="es">ES</option>
-        </select>
-        <lightning-icon icon-name="utility:world" alternative-text="World Icon" size="small" class="world-icon"></lightning-icon>
+    <div class="language-selector-container">
+        <div class="language-selector">
+            <select id="languageSelect" onchange={handleLanguageChange} value={selectedLanguage}>
+                <option value="en_US">EN</option>
+                <option value="es">ES</option>
+            </select>
+            <lightning-icon icon-name="utility:world" alternative-text="World Icon" size="small" class="world-icon"></lightning-icon>
+        </div>
     </div>
 </template>

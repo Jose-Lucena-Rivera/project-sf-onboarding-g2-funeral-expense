@@ -88,25 +88,52 @@ export default class CustomerForm extends LightningElement {
        supportMessage: 'We are here to support you during this difficult time.',
        requestMessage: 'What is your request?',
        requestTypeLabel: 'What is your request?',
-       fileUploadedText: 'File uploaded successfully'
-    };
+       fileUploadedText: 'File uploaded successfully',
 
-    // Dropdown #1: options for first screen
-    firstDropdownOptions = [
+    firstDropdownOptions: [
         { label: 'Advance funds for unpaid funeral Expenses', value: 'option1' },
         { label: 'General advance of available funds', value: 'option2' },
         { label: 'Liquidation funds', value: 'option3' }
-    ];
-    // Dropdown #2: options for second screen
-    secondDropdownOptions = [
+    ],
+    secondDropdownOptions: [
         { label: 'Yes', value: 'optionA' },
         { label: 'No', value: 'optionB' }
-    ];
-    // Dropdown #3: options for third screen, disbursement type
-    thirdDropdownOptions = [
+    ],
+    thirdDropdownOptions: [
         { label: 'Account Deposit', value: 'Account Deposit' },
         { label: 'Pick-up at branch', value: 'Pick-up at branch' }
-    ];
+    ],
+
+     // New placeholders and combobox labels:
+     disbursementPreferenceLabel: 'Disbursement Preference',  // For the combobox label
+     disbursementPreferencePlaceholder: 'Select Disbursement preference',  // Placeholder for combobox
+     
+     selectAnswerLabel: 'Select Answer',  // For the combobox label
+     selectAnswerPlaceholder: 'Select Yes/No',  // Placeholder for the "Yes/No" combobox
+     
+     branchTownPlaceholder: 'Select Branch Town',  // Placeholder for Branch Town combobox
+     branchPlaceholder: 'Select Branch',  // Placeholder for Branch combobox
+
+     initialDropdownLabel: 'What is your request?',
+     initialDropdownPlaceholder: 'Select request type'
+    };
+
+    // // Dropdown #1: options for first screen
+    // firstDropdownOptions = [
+    //     { label: 'Advance funds for unpaid funeral Expenses', value: 'option1' },
+    //     { label: 'General advance of available funds', value: 'option2' },
+    //     { label: 'Liquidation funds', value: 'option3' }
+    // ];
+    // // Dropdown #2: options for second screen
+    // secondDropdownOptions = [
+    //     { label: 'Yes', value: 'optionA' },
+    //     { label: 'No', value: 'optionB' }
+    // ];
+    // // Dropdown #3: options for third screen, disbursement type
+    // thirdDropdownOptions = [
+    //     { label: 'Account Deposit', value: 'Account Deposit' },
+    //     { label: 'Pick-up at branch', value: 'Pick-up at branch' }
+    // ];
 
     // Contains selected values for each of the Dropdowns
     @track selectedFirstOption;
@@ -273,15 +300,29 @@ export default class CustomerForm extends LightningElement {
         //     }
         // }
 
-        // If there is an error in any input field, return.
+        // If any input field is blank, then return error.
         if (!this.formData.firstNameDeceased || !this.formData.lastNameDeceased || !this.formData.funeralHomeName || 
         !this.formData.disbursementPreference || !this.formData.dateOfDeath || !this.formData.claimedAmount ||
         !this.formData.otherPhone || !this.formData.relationship || !this.formData.ssn || 
-        !(this.formData.funeralHomeNumber || (this.formData.branchTown && this.formData.branch))) {
+        !(this.formData.funeralHomeNumber || (this.formData.branchTown && this.formData.branch)) ||
+        !this.deathCertificateFileName || !this.requestorIdFileName || !this.funeralHomeInvoiceFileName) {
             this.showError = true;
             this.errorMessage = 'All fields must be completed.'
             return;
         }
+
+        // If the claimed amount is greater than $15,000, then return.
+        if (this.formData.claimedAmount > 15000) {
+            this.showError = true;
+            this.errorMessage = 'Claimed amount cannot be greater than $15,000.'
+            return;
+        }
+
+         // Get the language preference from localStorage
+        const selectedLanguage = localStorage.getItem('selectedLanguage');
+        
+        // Update formData with language preference
+        this.formData.languagePreference = selectedLanguage === 'es' ? 'ES' : 'EN';
 
         createAdvanceFundCase({
             firstNameDeceased: this.formData.firstNameDeceased,
@@ -300,25 +341,26 @@ export default class CustomerForm extends LightningElement {
             email: this.formData.email,
             accountId: this.formData.accountId, // Pass the associated account ID when creating the case
             branchTown: this.formData.branchTown,
-            branch: this.formData.branch
+            branch: this.formData.branch,
+            languagePreference: this.formData.languagePreference
         })
         .then(result => {
-            // console.log(result);
-            // result = JSON.parse(JSON.stringify(result));
-            // console.log(result);
-
-            // Now link the uploaded files to the newly created case
-            if (this.uploadedFileIds.length > 0) {
-                this.linkFilesToCase(result.Id);
-            }
             // If true, create a Success Toast Notification,
             // Else create an Error Toast Notification.
-            if (result.CaseNumber != undefined) {
-                this.handleSuccessToast(result.CaseNumber);
+            if (result.CaseNumber) {
+                // Case created successfully, now link the files
+                this.linkFilesToCase(result.Id)
+                    .then(() => {
+                        this.handleSuccessToast(result.CaseNumber);
+                        window.location.href = "/s/my-cases";
+                    })
+                    .catch(error => {
+                        console.error('Error linking files to case:', error);
+                        this.handleErrorToast('Case created, but files failed to attach.');
+                    });
             } else {
-                this.handleErrorToast();
+                this.handleErrorToast('Error creating case.');
             }
-            window.location.href = "/s/my-cases";
         })
         .catch(error => {
             // Log the error and show an error toast
@@ -424,32 +466,23 @@ export default class CustomerForm extends LightningElement {
 
 
     linkFilesToCase(caseId) {
-        if (this.uploadedFileIds.length > 0) {
-            // Call Apex method to link the files to the case
-            linkFilesToCaseApex({ caseId: caseId, fileIds: this.uploadedFileIds })
-                .then(() => {
-                    console.log('Files successfully linked to the case');
-                    // Optionally show a toast or handle successful linking
-                    // const evt = new ShowToastEvent({
-                    //     title: 'Success',
-                    //     message: 'Files were successfully attached to the case',
-                    //     variant: 'success',
-                    // });
-                    // this.dispatchEvent(evt);
-                })
-                .catch(error => {
-                    console.error('Error linking files to case:', error);
-                    // Optionally show a toast or handle error
-                    // const evt = new ShowToastEvent({
-                    //     title: 'Error',
-                    //     message: 'Failed to attach files to the case. Please try again.',
-                    //     variant: 'error',
-                    // });
-                    // this.dispatchEvent(evt);
-                });
-        } else {
-            console.log('No files to link to the case');
-        }
+        return new Promise((resolve, reject) => {
+            if (this.uploadedFileIds.length > 0) {
+                // Call Apex method to link the files to the case
+                linkFilesToCaseApex({ caseId: caseId, fileIds: this.uploadedFileIds })
+                    .then(() => {
+                        console.log('Files successfully linked to the case');
+                        resolve();
+                    })
+                    .catch(error => {
+                        console.error('Error linking files to case:', error);
+                        reject(error);
+                    });
+            } else {
+                console.log('No files to link to the case');
+                resolve();
+            }
+        });
     }
 
 
@@ -493,6 +526,35 @@ export default class CustomerForm extends LightningElement {
             this.formLabels.supportMessage = 'Estamos aquí para apoyarte durante este momento difícil.';
             this.formLabels.requestMessage = '¿Cuál es tu solicitud?';
             this.formLabels.fileUploadedText = 'Archivo subido con éxito';
+
+
+            // Set Spanish labels for dropdowns
+            this.formLabels.firstDropdownOptions = [
+                { label: 'Fondos adelantados para gastos funerarios impagos', value: 'option1' },
+                { label: 'Adelanto general de fondos disponibles', value: 'option2' },
+                { label: 'Fondos de liquidación', value: 'option3' }
+            ];
+            this.formLabels.secondDropdownOptions = [
+                { label: 'Sí', value: 'optionA' },
+                { label: 'No', value: 'optionB' }
+            ];
+            this.formLabels.thirdDropdownOptions = [
+                { label: 'Depósito en cuenta', value: 'Account Deposit' },
+                { label: 'Recoger en la sucursal', value: 'Pick-up at branch' }
+            ];
+
+            // Set Spanish labels and placeholders
+            this.formLabels.disbursementPreferenceLabel = 'Preferencia de desembolso';
+            this.formLabels.disbursementPreferencePlaceholder = 'Seleccione una preferencia de desembolso';
+
+            this.formLabels.selectAnswerLabel = 'Seleccionar respuesta';
+            this.formLabels.selectAnswerPlaceholder = 'Seleccionar Sí/No';
+
+            this.formLabels.branchTownPlaceholder = 'Seleccionar ciudad de sucursal';
+            this.formLabels.branchPlaceholder = 'Seleccionar sucursal';
+
+            this.formLabels.initialDropdownLabel = '¿Cuál es tu solicitud?';
+            this.formLabels.initialDropdownPlaceholder = 'Seleccione el tipo de solicitud';
         } else {
             // English (default) labels and text
             this.formLabels.firstNameLabel = 'First Name';
@@ -532,6 +594,34 @@ export default class CustomerForm extends LightningElement {
             this.formLabels.supportMessage = 'We are here to support you during this difficult time.';
             this.formLabels.requestMessage = 'What is your request?';
             this.formLabels.fileUploadedText = 'File uploaded successfully';
+
+            // Set English (default) labels for dropdowns
+            this.formLabels.firstDropdownOptions = [
+                { label: 'Advance funds for unpaid funeral Expenses', value: 'option1' },
+                { label: 'General advance of available funds', value: 'option2' },
+                { label: 'Liquidation funds', value: 'option3' }
+            ];
+            this.formLabels.secondDropdownOptions = [
+                { label: 'Yes', value: 'optionA' },
+                { label: 'No', value: 'optionB' }
+            ];
+            this.formLabels.thirdDropdownOptions = [
+                { label: 'Account Deposit', value: 'Account Deposit' },
+                { label: 'Pick-up at branch', value: 'Pick-up at branch' }
+            ];
+
+            // Set English (default) labels and placeholders
+            this.formLabels.disbursementPreferenceLabel = 'Disbursement Preference';
+            this.formLabels.disbursementPreferencePlaceholder = 'Select Disbursement preference';
+
+            this.formLabels.selectAnswerLabel = 'Select Answer';
+            this.formLabels.selectAnswerPlaceholder = 'Select Yes/No';
+
+            this.formLabels.branchTownPlaceholder = 'Select Branch Town';
+            this.formLabels.branchPlaceholder = 'Select Branch';
+
+            this.formLabels.initialDropdownLabel = 'What is your request?';
+            this.formLabels.initialDropdownPlaceholder = 'Select request type';
         }
     }
     

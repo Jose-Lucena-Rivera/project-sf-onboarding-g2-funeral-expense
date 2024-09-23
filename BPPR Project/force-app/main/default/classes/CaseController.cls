@@ -16,7 +16,7 @@ public with sharing class CaseController {
     @AuraEnabled
     public static Case createAdvanceFundCase(String firstNameDeceased, String lastNameDeceased, String funeralHomeName, String disbursementPreference, 
     Date dateOfDeath, String claimedAmount, String preferredPhone, String otherPhone, String relationship, String ssn, String funeralHomeNumber, String firstname, 
-    String lastname, String email, String accountId, String branchTown, String branch) {
+    String lastname, String email, String accountId, String branchTown, String branch, String languagePreference) {
     
 
         // Create new Case
@@ -35,6 +35,7 @@ public with sharing class CaseController {
             AccountId = accountId,
             Branch_Town__c = branchTown,
             Branch__c = branch,
+            Language_Preference__c = languagePreference,
             Origin='Funeral Expense Form'
         );
         
@@ -216,7 +217,7 @@ public with sharing class CaseController {
         User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
         
         try {
-            List<Case> cases = [SELECT id, caseNumber, status, accountId FROM Case WHERE accountId=:currentUser.AccountId];
+            List<Case> cases = [SELECT id, caseNumber, status, (SELECT id, subject, textBody FROM EmailMessages ORDER BY createdDate DESC), accountId FROM Case WHERE accountId=:currentUser.AccountId ORDER BY caseNumber DESC];
             return cases;
         } catch (Exception e) {
             throw new AuraHandledException(e.getMessage());

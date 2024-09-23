@@ -4,6 +4,15 @@ export default class LanguageSelector extends LightningElement {
     @track selectedLanguage = 'en_US';
 
     connectedCallback() {
+
+        // Check if we are on the login page or logout path
+        if (window.location.pathname.includes('/s/login')) {
+            // Set language to English on the login page
+            this.selectedLanguage = 'en_US';
+            localStorage.setItem('selectedLanguage', 'en_US');
+            
+        }
+
         // Retrieve the language from the URL parameter
         const urlParams = new URLSearchParams(window.location.search);
         const langFromUrl = urlParams.get('language');
@@ -41,6 +50,8 @@ export default class LanguageSelector extends LightningElement {
     
         // Reload the page to apply the new language
         window.location.reload();
+
+        this.notifyLanguageChange();
     }
 
     notifyLanguageChange() {

@@ -6,6 +6,7 @@
                 <tr>
                     <th>Case Number</th>
                     <th>Case Status</th>
+                    <th>Email Notifications</th>
                 </tr>
             </thead>
             <tbody>
@@ -13,6 +14,14 @@
                     <tr key={it.value.Id}>
                         <td>{it.value.CaseNumber}</td>
                         <td>{it.value.Status}</td>
+                        <td>
+                            <template iterator:email={it.value.EmailMessages}>
+                                <tr key={email.value.Id}>
+                                    <td>{email.value.Subject}</td>
+                                    <td>{email.value.TextBody}</td>
+                                </tr>
+                            </template>
+                        </td>
                     </tr>
                 </template>
             </tbody>

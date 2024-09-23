@@ -1,25 +1,37 @@
+.language-selector-container {
+    display: flex;
+    justify-content: flex-end; /* Align the language selector to the right */
+    padding-right: 1rem; /* Add some padding to the right edge */
+}
+
 .language-selector {
     display: flex;
     align-items: center;
-    justify-content: flex-end;
-    margin: 1rem;
+    border: 1px solid #E0E0E0; /* Light gray border for modern look */
+    border-radius: 6px; /* Slightly rounded corners */
+    background-color: #ffffff; /* White background */
+    padding: 0.25rem 0.5rem; /* Padding around the whole selector */
+    max-width: fit-content; /* Adjusts the width to fit the content */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    transition: all 0.3s ease; /* Smooth transition for hover effect */
 }
 
 .world-icon {
-    margin-left: 0.5rem; /* Space between dropdown and icon */
+    margin-right: 0.5rem; /* Increased space between the icon and text */
     font-size: 0.875rem; /* Match the size of the dropdown text */
+    color: #073579; /* Ensures the globe icon is colored */
 }
 
 .language-selector select {
-    appearance: none;
     background: none; /* Removes background color */
     color: #073579;
-    border: none; /* Removes border */
-    padding: 0.5rem 1rem;
-    font-size: 0.875rem; /* Match the icon size */
-    border-radius: 4px;
+    border: none; /* Removes the border */
+    font-size: 0.875rem; /* Keep the font size modern */
     cursor: pointer;
+    padding: 0.25rem 0; /* Slight padding within the select box */
     outline: none;
+    font-weight: 500; /* Bold text for emphasis */
+    border-radius: 4px; /* Added radius for better design */
 }
 
 .language-selector select option {
@@ -27,17 +39,22 @@
     color: #000000;
 }
 
-/* Hover effect for the dropdown text */
+.language-selector:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Stronger shadow on hover for interactivity */
+    border-color: #2278C9; /* Border color change on hover */
+}
+
 .language-selector select:hover {
     color: #2278C9; /* Changes text color on hover */
+    text-decoration: underline;
+    text-decoration-color: #2278C9; /* Custom underline color */
 }
 
 .language-selector select:focus {
     outline: none;
 }
 
-/* Custom underline on hover */
-.language-selector select:hover {
-    text-decoration: underline;
-    text-decoration-color: #2278C9; /* Custom underline color */
+/* Hover effect for the whole language selector */
+.language-selector:hover .world-icon {
+    color: #2278C9; /* Changes globe icon color on hover */
 }
