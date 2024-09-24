@@ -5,8 +5,8 @@
             <template for:each={userCases} for:item="caseItem">
                 <div key={caseItem.Id} class="case-card">
                     <div class="case-header">
-                        <h3 class="case-number">Case Number: {caseItem.CaseNumber}</h3>
-                        <span class="case-status">{caseItem.Status}</span>
+                        <h3 class="case-number">{formLabels.caseNumber}: {caseItem.CaseNumber}</h3>
+                        <span class="case-status">{caseItem.translatedStatus}</span>
                     </div>
 
                     <!-- Dynamic Resolution Status -->
@@ -17,7 +17,7 @@
 
 
                     <div class="email-notifications">
-                        <h4>Email Notifications:</h4>
+                        <h4>{formLabels.emailNotifications}:</h4>
                         <template for:each={caseItem.EmailMessages} for:item="email">
                             <div key={email.Id} class="email-notification">
                                 <!-- The subject is clickable to toggle visibility -->
@@ -42,6 +42,6 @@
     </template>
     <!-- Else show a message -->
     <template if:false={thereAreCases}>
-        <p class="no-cases-message">There are no cases.</p>
+        <p class="no-cases-message">{formLabels.noCasesMessage}</p>
     </template>
 </template>

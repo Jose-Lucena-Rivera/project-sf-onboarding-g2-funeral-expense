@@ -3,10 +3,68 @@ import getUsersCases from '@salesforce/apex/CaseController.getUsersCases';
 
 export default class UserCases extends LightningElement {
     @track userCases;
+    @track formLabels = {
+        caseNumber: 'Case Number',
+        caseStatus: 'Status',
+        emailNotifications: 'Email Notifications',
+        noCasesMessage: 'There are no cases.',
+        statusValues: {
+            New: 'New',
+            'In-Progress': 'In-Progress',
+            Closed: 'Closed'
+        }
+    };
 
     // Call user's cases from the start.
     connectedCallback() {
         this.loadUserCases();
+
+        // Retrieve language selection from URL or localStorage
+        const urlParams = new URLSearchParams(window.location.search);
+        const lang = urlParams.get('language') || localStorage.getItem('selectedLanguage');
+        this.updateFormLabels(lang);
+
+        // Add event listener for language changes
+        window.addEventListener('languagechange', this.handleLanguageChange.bind(this));
+    }
+
+    disconnectedCallback() {
+        window.removeEventListener('languagechange', this.handleLanguageChange);
+    }
+
+    handleLanguageChange(event) {
+        const newLang = event.detail.language;
+        this.updateFormLabels(newLang);
+    }
+
+    updateFormLabels(language) {
+        if (language === 'es') {
+            // Set Spanish labels
+            this.formLabels = {
+                caseNumber: 'Número de Caso',
+                caseStatus: 'Estado',
+                emailNotifications: 'Notificaciones por Correo Electrónico',
+                noCasesMessage: 'No hay casos.',
+                statusValues: {
+                    New: 'Nuevo',
+                    'In-Progress': 'En Progreso',
+                    Closed: 'Cerrado'
+                }
+            };
+        } else {
+            // Set English labels (default)
+            this.formLabels = {
+                caseNumber: 'Case Number',
+                caseStatus: 'Status',
+                emailNotifications: 'Email Notifications',
+                noCasesMessage: 'There are no cases.',
+                statusValues: {
+                    New: 'New',
+                    'In-Progress': 'In Progress',
+                    Closed: 'Closed'
+                }
+            };
+        }
     }
 
     // Load user's cases
@@ -28,6 +86,10 @@ export default class UserCases extends LightningElement {
                             // Add the resolution status display value
                             resolutionDisplay: this.getResolutionStatus(caseItem),
                             // Add the resolution status class
+
+                            // Add the translated status display value
+                            translatedStatus: this.getTranslatedStatus(caseItem.Status),
+
                             resolutionClass: this.getResolutionStatusClass(caseItem),
                             resolutionClassString: `resolution-status ${this.getResolutionStatusClass(caseItem)}`
                         };
@@ -42,15 +104,33 @@ export default class UserCases extends LightningElement {
             });
     }
 
+    
+    // // Helper method to determine the display value for Resolution_Status__c
+    // getResolutionStatus(caseItem) {
+    //     if (caseItem.Resolution_Status__c === 'Denied') {
+    //         return 'Denied';
+    //     } else if (caseItem.Resolution_Status__c === 'Approved-Deposit' || caseItem.Resolution_Status__c === 'Approved-Pickup') {
+    //         return 'Approved';
+    //     } else {
+    //         return caseItem.Resolution_Status__c;
+    //     }
+    // }
     // Helper method to determine the display value for Resolution_Status__c
     getResolutionStatus(caseItem) {
+        const language = localStorage.getItem('selectedLanguage') || 'en'; // Default to English if no language is selected
+        
         if (caseItem.Resolution_Status__c === 'Denied') {
-            return 'Denied';
+            return language === 'es' ? 'Denegado' : 'Denied'; // Translate Denied
         } else if (caseItem.Resolution_Status__c === 'Approved-Deposit' || caseItem.Resolution_Status__c === 'Approved-Pickup') {
-            return 'Approved';
+            return language === 'es' ? 'Aprobado' : 'Approved'; // Translate Approved
         } else {
-            return caseItem.Resolution_Status__c;
+            return caseItem.Resolution_Status__c; // For other statuses, return as-is
         }
+    }
+
+    // Helper method to translate the Status picklist value
+    getTranslatedStatus(status) {
+        return this.formLabels.statusValues[status] || status;
     }
 
     // Helper method to determine the class for Resolution_Status__c
@@ -62,9 +142,6 @@ export default class UserCases extends LightningElement {
         } else {
             return 'resolution-default';
         }
-    }
-    getResolutionStatusClassString(caseItem) {
-        return `resolution-status ${this.getResolutionStatusClass(caseItem)}`;
     }
 
     // Method to toggle the visibility of email body

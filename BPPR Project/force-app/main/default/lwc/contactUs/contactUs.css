@@ -1,0 +1,35 @@
+.contact-us {
+    font-family: Arial, sans-serif;
+    background-color: #d3dfe7;
+    color: rgb(31, 71, 118);
+    font-size: 22px;
+    text-align: center;
+    padding: 20px; /* Add padding for better spacing */
+}
+
+.contact-us img {
+    max-width: 10%; /* Increase icon size for better visibility */
+    height: auto;
+    margin: 0 auto 20px; /* Center the icon */
+}
+
+@media (max-width: 768px) {
+    .contact-us {
+        font-size: 18px; /* Reduce font size for tablets */
+    }
+    
+    .contact-us img {
+        max-width: 20%; /* Increase icon size on smaller screens */
+    }
+}
+
+@media (max-width: 480px) {
+    .contact-us {
+        font-size: 16px; /* Further reduce font size for mobile */
+        padding: 15px; /* Reduce padding for mobile */
+    }
+
+    .contact-us img {
+        max-width: 30%; /* Further increase icon size on mobile */
+    }
+}
