@@ -217,7 +217,7 @@ public with sharing class CaseController {
         User currentUser = [SELECT Id, AccountId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
         
         try {
-            List<Case> cases = [SELECT id, caseNumber, status, (SELECT id, subject, textBody FROM EmailMessages ORDER BY createdDate DESC), accountId FROM Case WHERE accountId=:currentUser.AccountId ORDER BY caseNumber DESC];
+            List<Case> cases = [SELECT id, caseNumber, status, Resolution_Status__c, (SELECT id, subject, textBody FROM EmailMessages ORDER BY createdDate DESC), accountId FROM Case WHERE accountId=:currentUser.AccountId ORDER BY caseNumber DESC];
             return cases;
         } catch (Exception e) {
             throw new AuraHandledException(e.getMessage());

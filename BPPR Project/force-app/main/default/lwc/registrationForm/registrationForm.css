@@ -1,0 +1,14 @@
+.custom-button {
+    --slds-c-button-brand-color-background: #005596;
+    --slds-c-button-brand-color-border: white;
+}
+
+lightning-input {
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+lightning-textarea {
+    margin-left: 5px;
+    margin-right: 5px;
+}

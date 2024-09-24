@@ -145,7 +145,13 @@ export default class CustomerForm extends LightningElement {
      successToastTitle_es: 'El caso ha sido creado con éxito',
      successToastMessage_es: 'Hoy recibirá un correo electrónico confirmando que hemos recibido su solicitud con su número de ticket. Su solicitud debe ser procesada entre 24-48 horas. Le enviaremos un correo electrónico indicando si su solicitud fue aprobada o rechazada.',
      errorToastTitle_es: 'No pudimos registrar su solicitud',
-     errorToastMessage_es: '¡Algo sucedió! Su solicitud no pudo ser registrada en este momento. Por favor, inténtelo de nuevo en unos momentos. Disculpe las molestias y gracias por su comprensión.'
+     errorToastMessage_es: '¡Algo sucedió! Su solicitud no pudo ser registrada en este momento. Por favor, inténtelo de nuevo en unos momentos. Disculpe las molestias y gracias por su comprensión.',
+
+
+    // Labels for section titles
+    deceasedCustomerInfoTitle: 'Deceased Customer Information',
+    requestorInfoTitle: 'Requestor Information',
+    disbursementInfoTitle: 'Disbursement Information'
     };
 
     // // Dropdown #1: options for first screen
@@ -686,6 +692,16 @@ export default class CustomerForm extends LightningElement {
 
             this.formLabels.initialDropdownLabel = '¿Cuál es tu solicitud?';
             this.formLabels.initialDropdownPlaceholder = 'Seleccione el tipo de solicitud';
+
+             // Set Spanish labels
+            this.formLabels.deceasedCustomerInfoTitle = 'Información del cliente fallecido';
+            this.formLabels.requestorInfoTitle = 'Información del solicitante';
+            this.formLabels.disbursementInfoTitle = 'Información del desembolso';
+            
+            this.formLabels.firstNameLabel = 'Nombre';
+            this.formLabels.lastNameLabel = 'Apellido';
+            this.formLabels.socialSecurityLabel = 'Número de Seguro Social';
+            this.formLabels.dateOfDeathLabel = 'Fecha de Defunción';
         } else {
             // English (default) labels and text
             this.formLabels.firstNameLabel = 'First Name';
@@ -753,6 +769,16 @@ export default class CustomerForm extends LightningElement {
 
             this.formLabels.initialDropdownLabel = 'What is your request?';
             this.formLabels.initialDropdownPlaceholder = 'Select request type';
+
+            // Set English labels (default)
+            this.formLabels.deceasedCustomerInfoTitle = 'Deceased Customer Information';
+            this.formLabels.requestorInfoTitle = 'Requestor Information';
+            this.formLabels.disbursementInfoTitle = 'Disbursement Information';
+            
+            this.formLabels.firstNameLabel = 'First Name';
+            this.formLabels.lastNameLabel = 'Last Name';
+            this.formLabels.socialSecurityLabel = 'Social Security Number';
+            this.formLabels.dateOfDeathLabel = 'Date of Death';
         }
     }
     

@@ -120,10 +120,14 @@
             data-id="confirmPassword"
             required>
         </lightning-input>
-
-        <lightning-button
-            label={labels.submit}
-            onclick={handleSubmit}>
-        </lightning-button>
+        <div class="slds-align_absolute-center" style="height:4rem">
+            <lightning-button
+                class="custom-button"
+                label={labels.submit}
+                onclick={handleSubmit}
+                variant="brand">
+            </lightning-button>
+        </div>
+        
     </lightning-card>
 </template>

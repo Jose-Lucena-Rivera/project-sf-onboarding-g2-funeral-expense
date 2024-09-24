@@ -1,0 +1,51 @@
+h1 {
+    font-size: 24px; /* Increased size for more prominence */
+    color: #005596;
+    margin-bottom: 15px; /* More space below the title */
+}
+
+li {
+    font-size: 20px; /* Increased size for more prominence */
+    color: #005596;
+}
+
+h2 {
+    font-size: 22px; /* Increased size for more prominence */
+    color: #091c5a;
+    margin-bottom: 15px; /* More space below the title */
+}
+
+h3 {
+    font-size: 20px; /* Increased size for more prominence */
+    color: #091c5a;
+    margin-top: 20px;   /* More space above the title */
+    margin-bottom: 5px; /* More space below the title */
+}
+
+p {
+    font-size: 16px; /* Increased size for better readability */
+    color: #091c5a;
+    margin-top: 20px;
+    margin-bottom: 20px; /* Increased spacing below the paragraph */
+}
+
+ul {
+    margin-bottom: 15px;
+}
+
+.slds-button_outline-brand {
+    --slds-c-button-outline-brand-color-background: white;
+    --slds-c-button-outline-brand-color-border: #091c5a;
+    --slds-c-button-text-color: #091c5a;
+}
+
+.slds-button_brand {
+    --slds-c-button-brand-color-background: #091c5a;
+    --slds-c-button-brand-color-border: white;
+}
+
+c-re-c-a-p-t-c-h-a {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+}

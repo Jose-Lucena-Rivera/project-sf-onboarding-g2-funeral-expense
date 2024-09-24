@@ -1,14 +1,13 @@
-<!-- heroBanner.html -->
 <template>
     <!-- Container for the banner -->
-    <div style="position: relative; text-align: center; color: white;">
+    <div class="hero-banner">
         <!-- Image rendering from static resource -->
-        <img src={heroBannerUrl} alt="Hero Banner" style="width: 100%; height: 400px; object-fit: cover;" />
+        <img src={heroBannerUrl} alt="Hero Banner" class="hero-image" />
         
         <!-- Text Overlay -->
-        <div style="position: absolute; top: 40%; left: 20%; transform: translate(-40%, -50%); color: #073579; font-family: 'Gotham', sans-serif;">
-            <h1 style="font-size: 48px;">{text1}</h1>
-            <h1 style="font-size: 48px;">{text2}</h1>
+        <div class="text-overlay">
+            <h1 class="banner-text">{text1}</h1>
+            <h1 class="banner-text">{text2}</h1>
         </div>
     </div>
 </template>

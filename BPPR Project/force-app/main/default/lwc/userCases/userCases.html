@@ -1,34 +1,47 @@
 <template>
     <!-- If user has cases, print them all -->
-    <template lwc:if={thereAreCases}>
-        <table>
-            <thead>
-                <tr>
-                    <th>Case Number</th>
-                    <th>Case Status</th>
-                    <th>Email Notifications</th>
-                </tr>
-            </thead>
-            <tbody>
-                <template iterator:it={userCases}>
-                    <tr key={it.value.Id}>
-                        <td>{it.value.CaseNumber}</td>
-                        <td>{it.value.Status}</td>
-                        <td>
-                            <template iterator:email={it.value.EmailMessages}>
-                                <tr key={email.value.Id}>
-                                    <td>{email.value.Subject}</td>
-                                    <td>{email.value.TextBody}</td>
-                                </tr>
-                            </template>
-                        </td>
-                    </tr>
-                </template>
-            </tbody>
-        </table>
+    <template if:true={thereAreCases}>
+        <div class="cases-container">
+            <template for:each={userCases} for:item="caseItem">
+                <div key={caseItem.Id} class="case-card">
+                    <div class="case-header">
+                        <h3 class="case-number">Case Number: {caseItem.CaseNumber}</h3>
+                        <span class="case-status">{caseItem.Status}</span>
+                    </div>
+
+                    <!-- Dynamic Resolution Status -->
+                    <div class={caseItem.resolutionClassString}>
+                        <p>{caseItem.resolutionDisplay}</p>
+                    </div>
+                    
+
+
+                    <div class="email-notifications">
+                        <h4>Email Notifications:</h4>
+                        <template for:each={caseItem.EmailMessages} for:item="email">
+                            <div key={email.Id} class="email-notification">
+                                <!-- The subject is clickable to toggle visibility -->
+                                <h5 class="email-subject" 
+                                    data-case-id={caseItem.Id}
+                                    data-email-id={email.Id}
+                                    onclick={toggleEmailBody}>
+                                    {email.Subject}
+                                </h5>
+                                
+                                <!-- The body is conditionally displayed based on 'showBody' flag -->
+                                <template if:true={email.showBody}>
+                                    <p class="email-body">{email.TextBody}</p>
+                                </template>
+
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </template>
+        </div>
     </template>
     <!-- Else show a message -->
-    <template lwc:else>
-        <p>There are no cases.</p>
+    <template if:false={thereAreCases}>
+        <p class="no-cases-message">There are no cases.</p>
     </template>
 </template>

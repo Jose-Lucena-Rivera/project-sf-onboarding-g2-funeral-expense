@@ -1,0 +1,30 @@
+.hero-banner {
+    position: relative;
+    text-align: center;
+    color: white;
+    overflow: hidden; /* Ensures no overflow issues */
+}
+
+.hero-image {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+     
+}
+
+.text-overlay {
+    position: absolute;
+    top: 40%;
+    left: 20%;
+    transform: translate(-40%, -50%); /* Centering the text */
+    color: #073579; /* Your desired text color */
+    font-family: 'Gotham', sans-serif;
+    padding: 20px; /* Adds padding around the text */
+}
+
+.banner-text {
+    font-size: 48px; /* Keep the font size consistent */
+    font-weight: normal; /* Set font weight to normal */
+    margin: 0; /* Removes default margin */
+    line-height: 1.2; /* Adjust line height for better readability */
+}

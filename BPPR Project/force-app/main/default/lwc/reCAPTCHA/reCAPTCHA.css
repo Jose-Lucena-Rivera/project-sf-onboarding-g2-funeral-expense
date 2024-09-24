@@ -1,0 +1,7 @@
+iframe {
+    border:none;
+    height: auto !important;
+    width: 100% !important;
+    min-width: 300px; /* Adjust width based on reCAPTCHA's default */
+    overflow: visible !important; /* Ensure no scrollbars */
+}

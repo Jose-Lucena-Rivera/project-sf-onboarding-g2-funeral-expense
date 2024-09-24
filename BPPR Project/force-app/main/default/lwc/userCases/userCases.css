@@ -1,0 +1,82 @@
+.cases-container {
+    display: flex;
+    flex-wrap: wrap; /* Allow multiple cards to wrap */
+    gap: 20px; /* Space between cards */
+    margin: 20px; /* Margin around the container */
+}
+
+.case-card {
+    background-color: #ffffff; /* White background for the card */
+    border: 1px solid #e0e0e0; /* Soft border around the card */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    padding: 15px; /* Padding inside the card */
+    width: 300px; /* Fixed width for cards */
+}
+
+.case-header {
+    display: flex;
+    justify-content: space-between; /* Space between title and status */
+    align-items: center; /* Center align items */
+}
+
+.case-number {
+    font-size: 18px; /* Size for case number */
+    color: #073579; /* Dark blue color */
+    margin: 0; /* Remove default margin */
+}
+
+.case-status {
+    font-size: 16px; /* Size for status */
+    color: #000000; /* Green color for active status */
+    font-weight: normal; /* Bold font for emphasis */
+}
+
+.email-notifications {
+    margin-top: 15px; /* Space above notifications */
+}
+
+.email-notification {
+    margin-bottom: 10px; /* Space below each email */
+    padding: 10px; /* Padding around each email block */
+    border: 1px solid #e0e0e0; /* Soft border around email notifications */
+    border-radius: 4px; /* Slightly rounded corners */
+}
+
+.email-subject {
+    font-size: 16px; /* Size for email subject */
+    color: #073579; /* Dark blue for subject */
+    margin: 0; /* Remove default margin */
+    cursor: pointer; /* Indicates subject is clickable */
+}
+
+.email-body {
+    font-size: 14px; /* Size for email body */
+    color: black; /* Black text color */
+    margin: 5px 0 0; /* Space above the body */
+}
+
+.no-cases-message {
+    text-align: center; /* Center align message */
+    font-size: 18px; /* Larger font for message */
+    color: #757575; /* Gray color for no cases message */
+    margin: 20px; /* Margin around the message */
+}
+
+.resolution-approved {
+    color: #4CAF50; /* Green color for Approved */
+    font-weight: bold; /* Bold font for emphasis */
+    font-size: 16px;
+}
+
+.resolution-denied {
+    color: red; /* Red color for Denied */
+    font-weight: bold; /* Bold font for emphasis */
+    font-size: 16px;
+}
+
+.resolution-default {
+    color: black; /* Default color */
+    font-weight: normal; /* Normal weight for default */
+    font-size: 16px;
+}
