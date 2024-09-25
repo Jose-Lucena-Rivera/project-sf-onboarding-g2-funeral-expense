@@ -6,7 +6,7 @@
 }
 
 .case-card {
-    background-color: #ffffff; /* White background for the card */
+    background-color: #073579; /* White background for the card */
     border: 1px solid #e0e0e0; /* Soft border around the card */
     border-radius: 8px; /* Rounded corners */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
@@ -22,18 +22,19 @@
 
 .case-number {
     font-size: 18px; /* Size for case number */
-    color: #073579; /* Dark blue color */
+    color: #ffffff; /* Dark blue color #073579*/
     margin: 0; /* Remove default margin */
 }
 
 .case-status {
     font-size: 16px; /* Size for status */
-    color: #000000; /* Green color for active status */
+    color: #ffffff; /* Green color for active status */
     font-weight: normal; /* Bold font for emphasis */
 }
 
 .email-notifications {
     margin-top: 15px; /* Space above notifications */
+    color: #ffffff;
 }
 
 .email-notification {
@@ -41,18 +42,21 @@
     padding: 10px; /* Padding around each email block */
     border: 1px solid #e0e0e0; /* Soft border around email notifications */
     border-radius: 4px; /* Slightly rounded corners */
+    background-color: #ffffff;
 }
 
 .email-subject {
     font-size: 16px; /* Size for email subject */
     color: #073579; /* Dark blue for subject */
+    background-color: #ffffff;
     margin: 0; /* Remove default margin */
     cursor: pointer; /* Indicates subject is clickable */
 }
 
 .email-body {
     font-size: 14px; /* Size for email body */
-    color: black; /* Black text color */
+    color: #073579; /* Black text color */
+    background-color: #ffffff;
     margin: 5px 0 0; /* Space above the body */
 }
 
