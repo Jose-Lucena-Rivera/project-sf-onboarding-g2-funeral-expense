@@ -98,7 +98,7 @@
             type="text"
             onchange={handleInputChange}
             data-id="postalCode"
-            pattern={patterns.postalCode}
+            pattern="^[0-9]{5}(-[0-9]{4})?$"
             message-when-pattern-mismatch="Please enter a valid postal code."
             required>
         </lightning-input>

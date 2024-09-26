@@ -24,7 +24,7 @@ export default class RegistrationForm extends LightningElement {
 
     patterns = {
         password: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':\"\\|,.<>\/?]).{8,}$/,
-        postalCode: /^\d{5}(-\d{4})?$/,
+        postalCode: /^[0-9]{5}(-[0-9]{4})?$/,
         ssn: /^[0-9]{4}$/,
         email: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
     }

@@ -1,3 +1,20 @@
+.form-container {
+    max-width: 800px; /* Adjust this to control the form width */
+    margin: 0 auto;   /* Center the container horizontally */
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: Adds a subtle shadow */
+    border: 1px solid #e0e0e0; /* Light gray border */
+}
+
+/* Adjust the width of the input fields */
+lightning-input,
+lightning-combobox,
+lightning-file-upload {
+    width: 100%;
+}
+
 h1 {
     font-size: 24px; /* Increased size for more prominence */
     color: #005596;
@@ -48,4 +65,9 @@ c-re-c-a-p-t-c-h-a {
     width: 100%;
     height: auto;
     overflow: visible;
+}
+
+
+.warning{
+    color: red;
 }

@@ -81,7 +81,8 @@ export default class CustomerForm extends LightningElement {
        funeralHomeBillText: 'Funeral home bill',
        bankIssuanceText: 'The Bank will issue an official check payable to the funeral home for the amount billed up to the maximum permitted by law ($15,000) of the funds deposited with Popular.',
        invoicePaidText: 'Is the funeral home invoice paid?',
-       unpaidInvoiceInfo: 'To request an advance for funeral expenses the invoice must be unpaid. You can request a general advance, for more information on how to request this visit:',
+       warningPaidInvoice:'Warning if you request an advance for funeral expense with a paid invoice your request will be denied',
+       unpaidInvoiceInfo: 'You can request a general advance, for more information on how to request this visit:',
        visitLinkMessage: 'Please visit',
        finalStepText: 'Screen 4: Final step or confirmation.',
        supportMessage: 'We are here to support you during this difficult time.',
@@ -657,7 +658,8 @@ export default class CustomerForm extends LightningElement {
             this.formLabels.funeralHomeBillText = 'Factura de la funeraria';
             this.formLabels.bankIssuanceText = 'El Banco emitirá un cheque oficial pagadero a la funeraria por el monto facturado hasta el máximo permitido por la ley ($15,000) de los fondos depositados en Popular.';
             this.formLabels.invoicePaidText = '¿La factura de la funeraria está pagada?';
-            this.formLabels.unpaidInvoiceInfo = 'Para solicitar un adelanto para gastos funerarios, la factura debe estar impaga. Puede solicitar un adelanto general, para obtener más información sobre cómo solicitar esto visite:';
+            this.formLabels.warningPaidInvoice='Advertencia si solicita un avance para gastos fúnebres con una factura pagada su solicitud será denegada';
+            this.formLabels.unpaidInvoiceInfo = 'Puede solicitar un adelanto general, para obtener más información sobre cómo solicitar esto visite:';
             this.formLabels.visitLinkMessage = 'Por favor visita';
             this.formLabels.finalStepText = 'Pantalla 4: Paso final o confirmación.';
             this.formLabels.supportMessage = 'Estamos aquí para apoyarte durante este momento difícil.';
@@ -735,7 +737,8 @@ export default class CustomerForm extends LightningElement {
             this.formLabels.funeralHomeBillText = 'Funeral home bill';
             this.formLabels.bankIssuanceText = 'The Bank will issue an official check payable to the funeral home for the amount billed up to the maximum permitted by law ($15,000) of the funds deposited with Popular.';
             this.formLabels.invoicePaidText = 'Is the funeral home invoice paid?';
-            this.formLabels.unpaidInvoiceInfo = 'To request an advance for funeral expenses the invoice must be unpaid. You can request a general advance, for more information on how to request this visit:';
+            this.formLabels.warningPaidInvoice='Warning if you request an advance for funeral expense with a paid invoice your request will be denied';
+            this.formLabels.unpaidInvoiceInfo = 'You can request a general advance, for more information on how to request this visit:';
             this.formLabels.visitLinkMessage = 'Please visit';
             this.formLabels.finalStepText = 'Screen 4: Final step or confirmation.';
             this.formLabels.supportMessage = 'We are here to support you during this difficult time.';

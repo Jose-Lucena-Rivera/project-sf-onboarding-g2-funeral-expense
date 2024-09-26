@@ -1,4 +1,5 @@
 <template>
+    <div class="form-container">
     <!-- Screen 2 -->
     <template lwc:if={isScreen2}>
         <!-- <h1>{formLabels.requestSupportText}</h1> -->
@@ -21,6 +22,9 @@
             onchange={handleSecondDropdownChange}>
         </lightning-combobox>
         <template lwc:if={isOptionYes}>
+            <div class="warning"> 
+                    {formLabels.warningPaidInvoice}
+            </div>
             <p>{formLabels.unpaidInvoiceInfo} <lightning-formatted-url value="https://popular.com/processing-estate"></lightning-formatted-url></p>
         </template>
         <div class="slds-m-top_medium">
@@ -34,10 +38,6 @@
     <!-- Screen 3 -->
     <template lwc:elseif={isScreen3}>
         <h1>{formLabels.requestSupportText}</h1>
-
-        <template lwc:if={showError}>
-            <div class="slds-text-color_error">{errorMessage}</div>
-        </template>
 
         <!-- **Section Title for Deceased Customer Information** -->
         <h3>{formLabels.deceasedCustomerInfoTitle}</h3>
@@ -230,6 +230,9 @@
         <p>{formLabels.legalNotificationLabel}</p>
         <lightning-input label={formLabels.legalNotificationLabel} type="checkbox" required></lightning-input>
 
+        <template lwc:if={showError}>
+            <div class="slds-text-color_error">{errorMessage}</div>
+        </template>
         <div class="slds-m-top_medium">
             <lightning-button label={formLabels.previousButtonLabel} onclick={handlePrevious} class="slds-button_outline-brand" variant="brand-outline"></lightning-button>
             <lightning-button label={formLabels.submitButtonLabel} onclick={handleCaseSubmit} class="slds-button_brand" variant="brand"></lightning-button>
@@ -259,4 +262,5 @@
             </template>
         </div>
     </template>
+    </div>
 </template>
