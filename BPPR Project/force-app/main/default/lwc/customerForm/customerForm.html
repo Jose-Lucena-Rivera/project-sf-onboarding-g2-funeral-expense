@@ -185,6 +185,9 @@
                 data-id="funeralHomeNumber"
                 required>
             </lightning-input>
+            <div class="warning"> 
+                {formLabels.warningPopularAccount}
+            </div>
         </template>
         <template lwc:elseif={isOptionBranch}>
             <lightning-combobox

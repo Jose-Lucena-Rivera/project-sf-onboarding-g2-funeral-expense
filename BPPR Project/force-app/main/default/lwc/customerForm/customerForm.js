@@ -89,6 +89,7 @@ export default class CustomerForm extends LightningElement {
        requestMessage: 'What is your request?',
        requestTypeLabel: 'What is your request?',
        fileUploadedText: 'File uploaded successfully',
+       warningPopularAccount: 'Account must be associated to POPULAR.',
 
     firstDropdownOptions: [
         { label: 'Advance funds for unpaid funeral Expenses', value: 'option1' },
@@ -665,6 +666,7 @@ export default class CustomerForm extends LightningElement {
             this.formLabels.supportMessage = 'Estamos aquí para apoyarte durante este momento difícil.';
             this.formLabels.requestMessage = '¿Cuál es tu solicitud?';
             this.formLabels.fileUploadedText = 'Archivo subido con éxito';
+            this.formLabels.warningPopularAccount = 'La cuenta debe estar asociada a POPULAR.';
 
 
             // Set Spanish labels for dropdowns
@@ -744,6 +746,7 @@ export default class CustomerForm extends LightningElement {
             this.formLabels.supportMessage = 'We are here to support you during this difficult time.';
             this.formLabels.requestMessage = 'What is your request?';
             this.formLabels.fileUploadedText = 'File uploaded successfully';
+            this.formLabels.warningPopularAccount = 'Account must be associated to POPULAR.';
 
             // Set English (default) labels for dropdowns
             this.formLabels.firstDropdownOptions = [
